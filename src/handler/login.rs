@@ -9,8 +9,8 @@ use crate::{
     AppState, Result,
 };
 use axum::{extract::Extension, http::HeaderMap, Json};
-use std::sync::Arc;
 use serde_json::{json, Value};
+use std::sync::Arc;
 use uuid::Uuid;
 
 pub async fn login(
@@ -36,7 +36,6 @@ pub async fn login(
     set_session(&mut conn, &session_id, &user_info.username)
         .await
         .map_err(log_error(handler_name))?;
-    let url = format!("/admin/{}", &user_info.username);
     let tmp = set_session_id(&session_id);
     Ok(Json(json!({"cookie": tmp})))
 }
