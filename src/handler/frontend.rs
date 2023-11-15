@@ -1,5 +1,6 @@
 use crate::{
     db::topic,
+    db::user,
     handler::{get_client, log_error},
     AppState, Result,
 };
@@ -20,6 +21,9 @@ pub async fn index(
 ) -> Result<Json<Value>> {
     let handler_name = "/frontend/index";
     let client = get_client(&state).await.map_err(log_error(handler_name))?;
+    user::find(&client, &user)
+        .await
+        .map_err(log_error(handler_name))?;
     let topics = topic::list_latest(&client, user.clone())
         .await
         .map_err(log_error(handler_name))?;

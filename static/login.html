@@ -58,11 +58,14 @@
         })
             .then(res => res.json())
             .then(data => {
-                if(data.hasOwnProperty('msg')) {
+                if (data.hasOwnProperty('msg')) {
                     message.css('color', 'red').text('Login failed:\xa0' + data.msg);
                     setTimeout(() => message.text(''), 3000);
-                } else
+                } else {
                     localStorage.setItem('username', username);
+                    document.cookie = data.cookie;
+                    location.href = '/user/' + username;
+                }
             })
     });
 </script>

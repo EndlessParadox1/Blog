@@ -11,17 +11,18 @@ let table = '<div class="mb-2">' +
     '<div style="text-align: center">';
 
 fetch('/api' + path)
-    .then(res => {
-        if(res.ok) {
+    .then(res => res.json())
+    .then(data => {
+        if(data.hasOwnProperty('msg'))
+            alert(data.msg);
+        else {
             $('#home').attr('href', path.replace('admin', 'user'));
             header.html('Hi, ' + path.replace('/admin/', ''));
             $('#logout').click(() => logout());
             $('#new').click(() => new_());
             $('#all').click(() => list());
-        } else
-            return res.json();
-    })
-    .then(err => alert(err.msg));
+        }
+    });
 
 function logout() {
     let ans = confirm('Sure to sign out?');
@@ -57,13 +58,13 @@ function new_() {
                     'markdown': markdown
                 })
             })
-                .then(res => {
-                    if (res.ok)
-                        new_(); // fresh
+                .then(res => res.json())
+                .then(data => {
+                    if (data.hasOwnProperty('msg'))
+                        alert('Post failed: ' + data.msg);
                     else
-                        return res.json();
-                })
-                .then(err => alert('Post failed: ' + err.msg));
+                        new_();
+                });
         }
         });
 }
@@ -135,13 +136,13 @@ function edit(i) {
                                 'markdown': markdown
                             })
                         })
-                            .then(res => {
-                                if (res.ok)
-                                    list(); // fresh
+                            .then(res => res.json())
+                            .then(data => {
+                                if (data.hasOwnProperty('msg'))
+                                    alert('Update failed: ' + data.msg);
                                 else
-                                    return res.json();
-                            })
-                            .then(err => alert('Update failed: ' + err.msg));
+                                    list();
+                            });
                     }
                 });
             }
@@ -153,13 +154,13 @@ function del(i) {
     let ans = confirm('Sure to delete「{{ item.name }}」?');
     if(ans) {
         fetch(`/api${path}/topic/` + i, {method: 'DELETE'})
-            .then(res => {
-                if(res.ok)
-                    list(); // fresh
+            .then(res => res.json())
+            .then(data => {
+                if(data.hasOwnProperty('msg'))
+                    alert('Delete failed: ' + data.msg);
                 else
-                    return res.json();
-            })
-            .then(err => alert('Delete failed: ' + err.msg));
+                    list();
+            });
     }
 }
 
