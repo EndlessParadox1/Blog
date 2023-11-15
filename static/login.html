@@ -56,15 +56,6 @@
                 'password': password,
             })
         })
-            .then(res => res.json())
-            .then(data => {
-                if(data.hasOwnProperty('msg')) {
-                    message.css('color', 'red').text('Login failed:\xa0' + data.msg);
-                    setTimeout(() => message.text(''), 3000);
-                }
-                else
-                    localStorage.setItem('username', username);
-            })
     });
 </script>
 </body>
