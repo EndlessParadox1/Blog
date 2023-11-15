@@ -62,8 +62,9 @@
                     message.css('color', 'red').text('Login failed:\xa0' + data.msg);
                     setTimeout(() => message.text(''), 3000);
                 } else {
-                    localStorage.setItem('username', username);
-                    document.cookie = data.cookie;
+                    let exp = new Date();
+                    exp.setTime(exp.getTime() + 86400000);
+                    document.cookie = data.cookie + `;expires=${exp.toUTCString()}`;
                     location.href = '/admin/' + username;
                 }
             })

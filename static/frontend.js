@@ -31,7 +31,7 @@ function index() {
                         content.append(tmp);
                     }
                     for (let arch of data.archs) {
-                        let tmp = `<li><a onclick="list(${arch})">${arch}</a></li>`;
+                        let tmp = `<li><a onclick="list(${arch.toString()})">${arch}</a></li>`;
                         archive.append(tmp);
                     }
                 } else
