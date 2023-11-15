@@ -31,8 +31,7 @@ function index() {
                         content.append(tmp);
                     }
                     for (let arch of data.archs) {
-                        console.log(typeof arch)
-                        let tmp = `<li><a onclick="list(${dt})" class="link">${arch}</a></li>`;
+                        let tmp = `<li><a onclick="list(${arch})" class="link">${arch}</a></li>`;
                         archive.append(tmp);
                     }
                 } else
@@ -64,6 +63,7 @@ function detail(i) {
 }
 
 function list(dt) {
+    console.log(dt);
     fetch(`/api${path}/archive/${dt.replace('~', '-')}`)
         .then(res => res.json())
         .then(data => {
