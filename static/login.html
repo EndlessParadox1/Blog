@@ -57,10 +57,9 @@
             })
         })
             .then(res => {
-                console.log(res.status)
                 if(res.ok) {
                     localStorage.setItem('username', username);
-                    return Promise.reject();
+                    return new Promise(() => {});
                 }
                 else
                     return res.json();
