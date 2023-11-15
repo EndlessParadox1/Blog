@@ -35,7 +35,7 @@ pub async fn login(
     set_session(&mut conn, &session_id, &user_info.username)
         .await
         .map_err(log_error(handler_name))?;
-    let url = format!("/admin/user/{}", &user_info.username);
+    let url = format!("/admin/{}", &user_info.username);
     redirect_with_session(&url, Some(&session_id))
 }
 
