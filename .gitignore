@@ -1,0 +1,4 @@
+.idea
+docs/config.toml
+docs/blog_nginx.conf
+target

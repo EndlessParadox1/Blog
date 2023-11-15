@@ -1,0 +1,24 @@
+server {
+        listen       8080;
+        server_name  blog.endlessparadox.top;
+
+        location / {
+                root /root/blog/static/;
+                index  index.html;
+                error_page 404 /404.html;
+        }
+
+        location /api/ {
+                proxy_pass http://localhost:2396/;
+                proxy_http_version 1.1;
+                proxy_set_header Host $http_host;
+        }
+
+        location ~ ^/user/\w+$ {
+                try_files $uri /frontend.html;
+        }
+
+        location ~ ^/admin/\w+$ {
+                try_files $uri /backend.html;
+        }
+}

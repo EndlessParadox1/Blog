@@ -1,0 +1,16 @@
+CREATE TABLE users (
+    username VARCHAR(255) PRIMARY KEY,
+    password VARCHAR(255) NOT NULL
+);
+
+CREATE TABLE topics (
+    id BIGSERIAL PRIMARY KEY,
+    title VARCHAR(255) NOT NULL,
+    summary VARCHAR(255) NOT NULL,
+    html TEXT NOT NULL,
+    markdown TEXT NOT NULL,
+    dateline TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    writer VARCHAR(255) NOT NULL,
+    is_del BOOLEAN NOT NULL DEFAULT FALSE,
+    FOREIGN KEY (writer) REFERENCES users (username)
+);
