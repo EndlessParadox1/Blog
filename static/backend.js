@@ -124,7 +124,7 @@ function edit(i) {
                         let title = $('#title').val();
                         let summary = $('#summary').val();
                         let markdown = $('#markdown').val();
-                        if (!/^[\x20-\x7E]{1,60}$/.test(title) || !/^[\x20-\x7E]{1,300}$/.test(summary) || markdown.empty()) {
+                        if (!/^[\x20-\x7E]{1,60}$/.test(title) || !/^[\x20-\x7E]{1,300}$/.test(summary) || markdown === '') {
                             alert('Some field is wrong!');
                             return;
                         }
