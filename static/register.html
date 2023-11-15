@@ -59,7 +59,7 @@
         })
             .then(res => {
                 if(res.ok) {
-                    message.text('Register succeed!\xa0'+ 'Redirect to the login UI later...');
+                    message.css('color', 'black').text('Register succeed!\xa0'+ 'Redirect to the login UI later...');
                     setTimeout(() => {
                         location.href = 'login.html';
                         message.text('');
@@ -69,7 +69,7 @@
             })
             .then(err => {
                 message.css('color', 'red').text('Register failed:\xa0' + err.msg);
-                setTimeout(() => message.text('').css('color', 'black'), 3000);
+                setTimeout(() => message.text(''), 3000);
             })
     })
 </script>

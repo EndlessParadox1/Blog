@@ -10,7 +10,7 @@ pub mod login;
 pub mod register;
 pub mod topic;
 
-type RedirectView = (StatusCode, HeaderMap);
+type RedirectView = (StatusCode, HeaderMap, ());
 
 async fn get_client(state: &AppState) -> Result<Client> {
     state.pool.get().await.map_err(AppError::from)
@@ -38,7 +38,7 @@ fn redirect_with_session(url: &str, c: Option<&str>) -> Result<RedirectView> {
         None => HeaderMap::new(),
     };
     hm.insert(header::LOCATION, url.parse().unwrap());
-    Ok((StatusCode::FOUND, hm))
+    Ok((StatusCode::FOUND, hm, ()))
 }
 
 fn redirect(url: &str) -> Result<RedirectView> {

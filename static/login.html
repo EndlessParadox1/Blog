@@ -57,6 +57,7 @@
             })
         })
             .then(res => {
+                console.log(res.status)
                 if(res.status === 300)
                     localStorage.setItem('username', username);
                 else
