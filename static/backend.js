@@ -49,7 +49,7 @@ function new_() {
                 alert('Some field is wrong!');
                 return;
             }
-            fetch(`/api${path}/topic/`, {
+            fetch(`/api${path}/topic`, {
                 method: 'POST',
                 headers: {'Content-Type': 'application/json'},
                 credentials: 'include',
@@ -155,7 +155,7 @@ function edit(i) {
 function del(i) {
     let ans = confirm('Sure to delete「{{ item.name }}」?');
     if(ans) {
-        fetch(`/api${path}/topic/` + i, {
+        fetch(`/api${path}/topic/${i}`, {
             method: 'DELETE',
             credentials: 'include'
         })
