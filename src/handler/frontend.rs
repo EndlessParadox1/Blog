@@ -58,6 +58,7 @@ pub async fn archive(
 ) -> Result<Json<Value>> {
     let handler_name = "/frontend/index";
     let client = get_client(&state).await.map_err(log_error(handler_name))?;
+    let dt = format!("{}-01 00:00:00", dt);
     let topics = topic::list_arch(&client, user.clone(), dt)
         .await
         .map_err(log_error(handler_name))?;

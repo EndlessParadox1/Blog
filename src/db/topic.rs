@@ -40,7 +40,7 @@ pub async fn list_arch(client: &Client, username: String, dt: String) -> Result<
 }
 
 pub async fn archive(client: &Client, username: String) -> Result<Vec<model::TopicArchive>> {
-    let sql = "SELECT DISTINCT to_char(DATE_TRUNC('month', dateline), 'YYYY-MM') AS dateline FROM topics WHERE writer = $1 AND is_del = false";
+    let sql = "SELECT DISTINCT to_char(DATE_TRUNC('month', dateline), 'YYYY~MM') AS dateline FROM topics WHERE writer = $1 AND is_del = false";
     super::query(client, sql, &[&username]).await
 }
 

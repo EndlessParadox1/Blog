@@ -31,7 +31,6 @@ function index() {
                         content.append(tmp);
                     }
                     for (let arch of data.archs) {
-                        console.log(arch);
                         let tmp = `<li><a onclick="list(${arch})" class="link">${arch}</a></li>`;
                         archive.append(tmp);
                     }
@@ -64,7 +63,7 @@ function detail(i) {
 }
 
 function list(dt) {
-    fetch(`/api${path}/archive/${dt}`)
+    fetch(`/api${path}/archive/${dt.replace('~', '-')}`)
         .then(res => res.json())
         .then(data => {
             if (data.hasOwnProperty('msg'))
