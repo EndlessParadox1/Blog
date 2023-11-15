@@ -173,7 +173,7 @@ function detail(i) {
     let div = $('#D' + i);
     let btn = $('#B' + i);
     if(div.attr('data-flag') === '0') {
-        fetch(`/api/topic/${i}?level=2`)
+        fetch(`/api/topic/${i}?level=0`)
             .then(res => res.json())
             .then(data => {
                 if(data.hasOwnProperty('msg'))
