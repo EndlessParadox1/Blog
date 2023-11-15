@@ -10,7 +10,7 @@ let table = '<div class="mb-2">' +
     '<textarea id="markdown" class="form-control" placeholder="Please write in Markdwon format" rows="15"></textarea></div>' +
     '<div style="text-align: center">';
 
-fetch('/api' + path)
+fetch('/api' + path, {credentials: 'include'})
     .then(res => res.json())
     .then(data => {
         if(data.hasOwnProperty('msg'))
@@ -27,7 +27,7 @@ fetch('/api' + path)
 function logout() {
     let ans = confirm('Sure to sign out?');
     if(ans) {
-        fetch('/api/logout')
+        fetch('/api/logout', {credentials: 'include'})
             .then(res => {
                 if(res.status !== 300)
                     return res.json();
@@ -52,6 +52,7 @@ function new_() {
             fetch(`/api${path}/topic/`, {
                 method: 'POST',
                 headers: {'Content-Type': 'application/json'},
+                credentials: 'include',
                 body: JSON.stringify({
                     'title': title,
                     'summary': summary,
@@ -72,7 +73,7 @@ function new_() {
 function list() {
     header.html('All Blogs');
     content.html('');
-    fetch(`/api${path}/topic`)
+    fetch(`/api${path}/topic`, {credentials: 'include'})
         .then(res => res.json())
         .then(data => {
             if (data.hasOwnProperty('msg'))
@@ -130,6 +131,7 @@ function edit(i) {
                         fetch(`/api${path}/topic/${i}`, {
                             method: 'POST',
                             headers: {'Content-Type': 'application/json'},
+                            credentials: 'include',
                             body: JSON.stringify({
                                 'title': title,
                                 'summary': summary,
@@ -153,7 +155,10 @@ function edit(i) {
 function del(i) {
     let ans = confirm('Sure to delete「{{ item.name }}」?');
     if(ans) {
-        fetch(`/api${path}/topic/` + i, {method: 'DELETE'})
+        fetch(`/api${path}/topic/` + i, {
+            method: 'DELETE',
+            credentials: 'include'
+        })
             .then(res => res.json())
             .then(data => {
                 if(data.hasOwnProperty('msg'))
