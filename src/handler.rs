@@ -1,8 +1,11 @@
 use crate::{error::AppError, session::set_session_id, AppState, Result};
-use axum::{http::{header, HeaderMap, StatusCode}, Json};
+use axum::{
+    http::{header, HeaderMap, StatusCode},
+    Json,
+};
 use deadpool_postgres::Client;
 use redis::aio::Connection;
-use serde_json::{Value, json};
+use serde_json::{json, Value};
 
 mod auth;
 pub mod backend;
