@@ -105,7 +105,7 @@ function list() {
 
 function edit(i) {
     header.html('Modify Blog');
-    fetch(`/api${path}/topic/${i}?level=1`)
+    fetch(`/api/topic/${i}?level=1`)
         .then(res => res.json())
         .then(data => {
             if(data.hasOwnProperty('msg'))
