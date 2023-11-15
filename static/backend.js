@@ -93,7 +93,7 @@ function list() {
                             `<td><div class="btn btn-info btn-sm" onclick="edit(${ids[k]})">Modify</div>` +
                             `<div class="btn btn-danger btn-sm" onClick="del(${ids[k]})">Delete</div></td>` +
                             `<td><div id="B${ids[k]}" class="btn btn-light btn-sm" onclick="detail(${ids[k]})">▲</div></td></tr>` +
-                            `<tr><td rowspan="4"><div id="D${ids[k]}" data-flag="0" class="detail"></div></div></td></tr>`;
+                            `<tr><td colspan="4"><div id="D${ids[k]}" data-flag="0" class="detail"></div></div></td></tr>`;
                         body.append(tmp);
                         i++;
                     }
