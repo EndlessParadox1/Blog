@@ -24,9 +24,9 @@ pub async fn register(
         return Err(AppError::bad_register());
     }
     let password = hash(&frm.password)?;
-    let row = user::create(&client, &frm.username, &password).await?;
-    if row < 1 {
-        return Err(AppError::multi_register());
+    let n = user::create(&client, &frm.username, &password).await.map_err(log_error(handler_name))?;
+    if n < 1 {
+        return Err(AppError::multi_register())
     }
     Ok(())
 }
