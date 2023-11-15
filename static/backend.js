@@ -93,7 +93,7 @@ function list() {
                             `<td><div class="btn btn-info btn-sm" onclick="edit(${ids[k]})">Modify</div>` +
                             `<div class="btn btn-danger btn-sm" onClick="del(${ids[k]})">Delete</div></td>` +
                             `<td><div id="B${ids[k]}" class="btn btn-light btn-sm" onclick="detail(${ids[k]})">▲</div></td></tr>` +
-                            `<tr><td colspan="4"><div id="D${ids[k]}" class="detail"></div></div></td></tr>`;
+                            `<tr><td colspan="4"><div id="D${ids[k]}" class="detail" data-flag="0"></div></div></td></tr>`;
                         body.append(tmp);
                         i++;
                     }
@@ -172,6 +172,11 @@ function del(i) {
 function detail(i) {
     let div = $('#D' + i);
     let btn = $('#B' + i);
+    div.slideToggle('fast');
+    if(btn.html() === '▲')
+        btn.html('▼')
+    else
+        btn.html('▲');
     if(div.attr('data-flag') === '0') {
         fetch(`/api/topic/${i}?level=0`)
             .then(res => res.json())
@@ -184,11 +189,4 @@ function detail(i) {
                 }
             })
     }
-    if(div.attr('data-flag') === '0')
-        return;
-    div.slideToggle('fast');
-    if(btn.html() === '▲')
-        btn.html('▼')
-    else
-        btn.html('▲');
 }

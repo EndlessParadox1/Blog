@@ -31,7 +31,7 @@ function index() {
                         content.append(tmp);
                     }
                     for (let arch of data.archs) {
-                        let tmp = '<li><a onclick="list(' + arch + `)" style="cursor: pointer">${arch}</a></li>`;
+                        let tmp = '<li><a onclick="list(' + arch + `)">${arch}</a></li>`;
                         archive.append(tmp);
                     }
                 } else
@@ -43,6 +43,11 @@ function index() {
 function detail(i) {
     let div = $('#D' + i);
     let btn = $('#B' + i);
+    div.slideToggle('fast');
+    if(btn.html() === 'Unfold')
+        btn.html('Fold')
+    else
+        btn.html('Unfold');
     if(div.attr('data-flag') === '0') {
         fetch(`/api/topic/${i}?level=0`)
             .then(res => res.json())
@@ -55,13 +60,6 @@ function detail(i) {
                 }
             })
     }
-    if(div.attr('data-flag') === '0')
-        return;
-    div.slideToggle('fast');
-    if(btn.html() === 'Unfold')
-        btn.html('Fold')
-    else
-        btn.html('Unfold');
 }
 
 function list(dt) {
