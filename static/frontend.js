@@ -65,7 +65,7 @@ function detail(i) {
 
 function list(dt) {
     console.log(dt);
-    fetch(`/api${path}/archive/${dt.replace('~', '-')}`)
+    fetch(`/api${path}/archive/${dt}`)
         .then(res => res.json())
         .then(data => {
             if (data.hasOwnProperty('msg'))
