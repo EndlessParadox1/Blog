@@ -56,17 +56,14 @@
                 'password': password,
             })
         })
-            .then(res => {
-                if(res.ok) {
-                    localStorage.setItem('username', username);
-                    return new Promise(() => {});
+            .then(res => res.json())
+            .then(data => {
+                if(data.hasOwnProperty('msg')) {
+                    message.css('color', 'red').text('Login failed:\xa0' + data.msg);
+                    setTimeout(() => message.text(''), 3000);
                 }
                 else
-                    return res.json();
-            })
-            .then(err => {
-                message.css('color', 'red').text('Login failed:\xa0' + err.msg);
-                setTimeout(() => message.text(''), 3000);
+                    localStorage.setItem('username', username);
             })
     });
 </script>

@@ -57,19 +57,18 @@
                 'password': password,
             })
         })
-            .then(res => {
-                if(res.ok) {
+            .then(res => res.json())
+            .then(data => {
+                if(data.hasOwnProperty('msg')) {
+                    message.css('color', 'red').text('Register failed:\xa0' + data.msg);
+                    setTimeout(() => message.text(''), 3000);
+                } else {
                     message.css('color', 'black').text('Register succeed!\xa0'+ 'Redirect to the login UI later...');
                     setTimeout(() => {
                         location.href = 'login.html';
                         message.text('');
                     }, 3000);
-                } else
-                    return res.json();
-            })
-            .then(err => {
-                message.css('color', 'red').text('Register failed:\xa0' + err.msg);
-                setTimeout(() => message.text(''), 3000);
+                }
             })
     })
 </script>

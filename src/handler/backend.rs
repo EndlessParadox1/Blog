@@ -26,13 +26,13 @@ pub async fn index(
     Extension(state): Extension<Arc<AppState>>,
     Path(user): Path<String>,
     headers: HeaderMap,
-) -> Result<()> {
+) -> Result<Json<Value>> {
     let handler_name = "/backend/index";
     let mut conn = get_conn(&state).await.map_err(log_error(handler_name))?;
     protect(&headers, &mut conn, &user)
         .await
         .map_err(log_error(handler_name))?;
-    Ok(())
+    Ok(Json(json!({})))
 }
 
 pub async fn list(
@@ -66,7 +66,7 @@ pub async fn add(
     Path(user): Path<String>,
     headers: HeaderMap,
     Json(frm): Json<Topic>,
-) -> Result<()> {
+) -> Result<Json<Value>> {
     let handler_name = "/backend/add";
     let mut conn = get_conn(&state).await.map_err(log_error(handler_name))?;
     protect(&headers, &mut conn, &user)
@@ -79,7 +79,7 @@ pub async fn add(
     if !res {
         return Err(AppError::duplication());
     }
-    Ok(())
+    Ok(Json(json!({})))
 }
 
 pub async fn edit(
@@ -87,7 +87,7 @@ pub async fn edit(
     Path((user, id)): Path<(String, i64)>,
     headers: HeaderMap,
     Json(frm): Json<Topic>,
-) -> Result<()> {
+) -> Result<Json<Value>> {
     let handler_name = "/backend/edit";
     let mut conn = get_conn(&state).await.map_err(log_error(handler_name))?;
     protect(&headers, &mut conn, &user)
@@ -97,14 +97,14 @@ pub async fn edit(
     topic::update(&client, &frm, id)
         .await
         .map_err(log_error(handler_name))?;
-    Ok(())
+    Ok(Json(json!({})))
 }
 
 pub async fn del(
     Extension(state): Extension<Arc<AppState>>,
     Path((user, id)): Path<(String, i64)>,
     headers: HeaderMap,
-) -> Result<()> {
+) -> Result<Json<Value>> {
     let handler_name = "/backend/del";
     let mut conn = get_conn(&state).await.map_err(log_error(handler_name))?;
     protect(&headers, &mut conn, &user)
@@ -117,5 +117,5 @@ pub async fn del(
     if !res {
         return Err(AppError::duplication());
     }
-    Ok(())
+    Ok(Json(json!({})))
 }

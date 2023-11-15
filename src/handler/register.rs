@@ -10,6 +10,7 @@ use axum::{extract::Extension, Json};
 use once_cell::sync::Lazy;
 use regex::Regex;
 use std::sync::Arc;
+use serde_json::{Value, json};
 
 static UN_VALID: Lazy<Regex> = Lazy::new(|| Regex::new(r"^[a-zA-Z_]{4,16}$").unwrap());
 static PW_VALID: Lazy<Regex> = Lazy::new(|| Regex::new(r"^[a-zA-Z0-9]{8,20}$").unwrap());
@@ -17,7 +18,7 @@ static PW_VALID: Lazy<Regex> = Lazy::new(|| Regex::new(r"^[a-zA-Z0-9]{8,20}$").u
 pub async fn register(
     Extension(state): Extension<Arc<AppState>>,
     Json(frm): Json<User>,
-) -> Result<()> {
+) -> Result<Json<Value>> {
     let handler_name = "/register";
     let client = get_client(&state).await.map_err(log_error(handler_name))?;
     if !UN_VALID.is_match(&frm.username) || !PW_VALID.is_match(&frm.password) {
@@ -28,5 +29,5 @@ pub async fn register(
     if n < 1 {
         return Err(AppError::multi_register())
     }
-    Ok(())
+    Ok(Json(json!({})))
 }

@@ -1,7 +1,8 @@
 use crate::{error::AppError, session::set_session_id, AppState, Result};
-use axum::http::{header, HeaderMap, StatusCode};
+use axum::{http::{header, HeaderMap, StatusCode}, Json};
 use deadpool_postgres::Client;
 use redis::aio::Connection;
+use serde_json::{Value, json};
 
 mod auth;
 pub mod backend;
@@ -10,7 +11,7 @@ pub mod login;
 pub mod register;
 pub mod topic;
 
-type RedirectView = (StatusCode, HeaderMap, ());
+type RedirectView = (StatusCode, HeaderMap, Json<Value>);
 
 async fn get_client(state: &AppState) -> Result<Client> {
     state.pool.get().await.map_err(AppError::from)
@@ -38,7 +39,7 @@ fn redirect_with_session(url: &str, c: Option<&str>) -> Result<RedirectView> {
         None => HeaderMap::new(),
     };
     hm.insert(header::LOCATION, url.parse().unwrap());
-    Ok((StatusCode::FOUND, hm, ()))
+    Ok((StatusCode::FOUND, hm, Json(json!({}))))
 }
 
 fn redirect(url: &str) -> Result<RedirectView> {
