@@ -1,5 +1,5 @@
 let path = location.pathname;
-let top = $('#top');
+let top_ = $('#top_');
 let header = $('#header');
 let content = $('#content');
 let archive = $('#archive');
@@ -13,7 +13,7 @@ function index() {
             if(data.hasOwnProperty('msg'))
                 alert('Load failed: ' + data.msg);
             else {
-                top.html(path.replace('/user/', '') + "'s Blog");
+                top_.html(path.replace('/user/', '') + "'s Blog");
                 header.html('Latest 10');
                 content.html('');
                 archive.html('');
