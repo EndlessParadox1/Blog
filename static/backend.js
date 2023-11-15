@@ -28,11 +28,13 @@ function logout() {
     let ans = confirm('Sure to sign out?');
     if(ans) {
         fetch('/api/logout', {credentials: 'include'})
-            .then(res => {
-                if(res.status !== 300)
-                    return res.json();
-            })
-            .then(err => alert('Logout failed: ' + err.msg));
+            .then(res => res.json())
+            .then(data => {
+                if(data.hasOwnProperty('msg'))
+                    alert('Logout failed: ' + data.msg);
+                else
+                    location.href = '/login.html';
+            });
     }
 }
 
@@ -129,7 +131,7 @@ function edit(i) {
                             return;
                         }
                         fetch(`/api${path}/topic/${i}`, {
-                            method: 'POST',
+                            method: 'PUT',
                             headers: {'Content-Type': 'application/json'},
                             credentials: 'include',
                             body: JSON.stringify({
