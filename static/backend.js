@@ -28,7 +28,7 @@ function logout() {
     if(ans) {
         fetch('/api/logout')
             .then(res => {
-                if(!res.ok)
+                if(res.status !== 300)
                     return res.json();
             })
             .then(err => alert('Logout failed: ' + err.msg));
