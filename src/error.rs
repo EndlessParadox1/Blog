@@ -69,7 +69,7 @@ impl AppError {
     }
 
     pub fn unauthorized() -> Self {
-        Self::from_str("Unauthorized!", AppErrorType::Unauthorized)
+        Self::from_str("Unauthorized, please sign in!", AppErrorType::Unauthorized)
     }
 
     pub fn duplication() -> Self {
