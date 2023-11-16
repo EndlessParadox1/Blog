@@ -10,11 +10,12 @@ pub async fn find(client: &Client, username: &str) -> Result<User> {
     .await
 }
 
-pub async fn create(client: &Client, username: &str, password: &str) -> Result<u64> {
+pub async fn create(client: &Client, username: &str, password: &str) -> Result<()> {
     super::execute(
         client,
         "INSERT INTO users VALUES ($1, $2)",
         &[&username, &password],
     )
-    .await
+    .await?;
+    Ok(())
 }

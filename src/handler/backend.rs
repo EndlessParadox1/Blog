@@ -73,12 +73,9 @@ pub async fn add(
         .await
         .map_err(log_error(handler_name))?;
     let client = get_client(&state).await.map_err(log_error(handler_name))?;
-    let res = topic::create(&client, &frm, user)
+    topic::create(&client, &frm, user)
         .await
         .map_err(log_error(handler_name))?;
-    if !res {
-        return Err(AppError::duplication());
-    }
     Ok(Json(json!({})))
 }
 

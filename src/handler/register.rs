@@ -1,6 +1,6 @@
 use crate::{
     db::user,
-    error::AppError,
+    error::{AppError, AppErrorType},
     form::User,
     handler::{get_client, log_error},
     password::hash,
@@ -20,16 +20,21 @@ pub async fn register(
     Json(frm): Json<User>,
 ) -> Result<Json<Value>> {
     let handler_name = "/register";
-    let client = get_client(&state).await.map_err(log_error(handler_name))?;
     if !UN_VALID.is_match(&frm.username) || !PW_VALID.is_match(&frm.password) {
         return Err(AppError::bad_register());
     }
+    let client = get_client(&state).await.map_err(log_error(handler_name))?;
+    match user::find(&client, &frm.username).await {
+        Ok(_) => return Err(AppError::multi_register()),
+        Err(err) => {
+            if err.types != AppErrorType::NotFound {
+                return Err(err);
+            }
+        }
+    }
     let password = hash(&frm.password)?;
-    let n = user::create(&client, &frm.username, &password)
+    user::create(&client, &frm.username, &password)
         .await
         .map_err(log_error(handler_name))?;
-    if n < 1 {
-        return Err(AppError::multi_register());
-    }
     Ok(Json(json!({})))
 }

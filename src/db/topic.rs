@@ -2,11 +2,11 @@ use crate::{form::Topic, md::to_html, model, Result};
 use std::time;
 use tokio_postgres::Client;
 
-pub async fn create(client: &Client, frm: &Topic, username: String) -> Result<bool> {
+pub async fn create(client: &Client, frm: &Topic, username: String) -> Result<()> {
     let html = to_html(&frm.markdown);
     let dateline = time::SystemTime::now();
     let sql = "INSERT INTO topics (title, summary, html, markdown, dateline, writer) VALUES ($1, $2, $3, $4, $5, $6)";
-    let n = super::execute(
+    super::execute(
         client,
         sql,
         &[
@@ -19,7 +19,7 @@ pub async fn create(client: &Client, frm: &Topic, username: String) -> Result<bo
         ],
     )
     .await?;
-    Ok(n > 0)
+    Ok(())
 }
 
 pub async fn del(client: &Client, id: i64) -> Result<bool> {
@@ -33,8 +33,7 @@ pub async fn list_latest(client: &Client, username: String) -> Result<Vec<model:
 }
 
 pub async fn list_arch(client: &Client, username: String, dt: String) -> Result<Vec<model::Topic>> {
-    let sql =
-        "SELECT id, title, summary, dateline from topics WHERE writer = $1";
+    let sql = "SELECT id, title, summary, dateline from topics WHERE writer = $1";
     let sql = format!("{} AND dateline BETWEEN '{}'::timestamp AND '{}'::timestamp + (INTERVAL '1' MONTH) - (INTERVAL '1' SECOND) ORDER BY dateline DESC", sql, &dt, &dt);
     super::query(client, &sql, &[&username]).await
 }
