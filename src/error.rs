@@ -10,7 +10,7 @@ use std::{
 };
 
 #[derive(Debug)]
-enum AppErrorType {
+pub enum AppErrorType {
     Redis,
     Db,
     Crypt,
@@ -45,10 +45,6 @@ impl AppError {
 
     pub fn bad_request(msg: &str) -> Self {
         Self::from_str(msg, AppErrorType::BadRequest)
-    }
-
-    pub fn not_found(msg: &str) -> Self {
-        Self::from_str(msg, AppErrorType::NotFound)
     }
 
     pub fn unauthorized(msg: &str) -> Self {

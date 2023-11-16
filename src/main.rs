@@ -8,7 +8,7 @@ use blog::{
     AppState,
 };
 use deadpool_postgres::Runtime;
-use redis::{AsyncCommands, Client};
+use redis::Client;
 use std::sync::Arc;
 
 #[tokio::main]

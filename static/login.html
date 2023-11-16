@@ -44,7 +44,7 @@
         let username = $('#username').val();
         let password = $('#password').val();
         if(username === '' || password === '') {
-            alert('Some field is empty!');
+            alert('Some field empty!');
             return;
         }
         let message = $('#message');
@@ -63,11 +63,11 @@
                     setTimeout(() => message.text(''), 3000);
                 } else {
                     let exp = new Date();
-                    exp.setTime(exp.getTime() + 86400000);
+                    exp.setTime(exp.getTime() + 86400000); // one day
                     document.cookie = data.cookie + `;expires=${exp.toUTCString()}`;
                     location.href = '/admin/' + username;
                 }
-            })
+            });
     });
 </script>
 </body>

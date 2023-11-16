@@ -7,7 +7,11 @@ use crate::{
 use axum::http::HeaderMap;
 use redis::aio::Connection;
 
-pub async fn protect(headers: &HeaderMap, conn: &mut Connection, username: &str) -> Result<String> {
+pub async fn protect(
+    headers: &HeaderMap,
+    conn: &mut Connection,
+    username: &str,
+) -> Result<(String, String)> {
     let res = is_user(conn, username).await?;
     if !res {
         return Err(AppError::bad_request("User non-existent!"));
@@ -16,7 +20,7 @@ pub async fn protect(headers: &HeaderMap, conn: &mut Connection, username: &str)
         let tmp = get_session(conn, &session_id).await?;
         if let Some(session) = tmp {
             if session == username {
-                return Ok(session_id);
+                return Ok((session_id, session));
             }
         }
     };

@@ -30,7 +30,7 @@ pub async fn add_user(conn: &mut Connection, value: &str) -> Result<()> {
 }
 
 pub async fn is_user(conn: &mut Connection, value: &str) -> Result<bool> {
-    let n = conn
+    let n: i32 = conn
         .sismember(USER_LIST, value)
         .await
         .map_err(AppError::from)?;

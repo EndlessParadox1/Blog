@@ -86,6 +86,6 @@ function detail(i) {
                     div.html(data.html);
                     div.attr('data-flag', '1');
                 }
-            })
+            });
     }
 }

@@ -1,12 +1,24 @@
-use crate::{db::topic, error::AppError, form::Topic, handler::{auth::protect, get_client, get_conn, log_error}, rds::del_session, session::get_session_id, AppState, Result, session};
+use crate::{
+    db::topic,
+    error::AppError,
+    form::Topic,
+    handler::{auth::protect, get_client, get_conn, log_error},
+    rds::del_session,
+    AppState, Result,
+};
 use axum::{
     extract::Path,
     headers::HeaderMap,
     routing::{get, put},
     Extension, Json, Router,
 };
+use once_cell::sync::Lazy;
+use regex::Regex;
 use serde_json::{json, Value};
 use std::sync::Arc;
+
+static TI_VALID: Lazy<Regex> = Lazy::new(|| Regex::new(r"^[\x20-\x7E]{1,60}$").unwrap());
+static SU_VALID: Lazy<Regex> = Lazy::new(|| Regex::new(r"^[\x20-\x7E]{1,300}$").unwrap());
 
 /// Backend router
 pub fn router() -> Router {
@@ -37,7 +49,7 @@ pub async fn logout(
 ) -> Result<Json<Value>> {
     let handler_name = "Backend/logout";
     let mut conn = get_conn(&state).await.map_err(log_error(handler_name))?;
-    let session_id = protect(&headers, &mut conn, &user)
+    let (session_id, _) = protect(&headers, &mut conn, &user)
         .await
         .map_err(log_error(handler_name))?;
     del_session(&mut conn, &session_id)
@@ -79,6 +91,11 @@ pub async fn add(
     Json(frm): Json<Topic>,
 ) -> Result<Json<Value>> {
     let handler_name = "Backend/add";
+    if !TI_VALID.is_match(&frm.title) || !SU_VALID.is_match(&frm.summary) || frm.markdown.is_empty() {
+        return Err(log_error(handler_name)(AppError::bad_request(
+            "Some field wrong!",
+        )));
+    }
     let mut conn = get_conn(&state).await.map_err(log_error(handler_name))?;
     protect(&headers, &mut conn, &user)
         .await
@@ -97,14 +114,24 @@ pub async fn edit(
     Json(frm): Json<Topic>,
 ) -> Result<Json<Value>> {
     let handler_name = "Backend/edit";
+    if !TI_VALID.is_match(&frm.title) || !SU_VALID.is_match(&frm.summary) || frm.markdown.is_empty() {
+        return Err(log_error(handler_name)(AppError::bad_request(
+            "Some field wrong!",
+        )));
+    }
     let mut conn = get_conn(&state).await.map_err(log_error(handler_name))?;
-    protect(&headers, &mut conn, &user)
+    let (_, session) = protect(&headers, &mut conn, &user)
         .await
         .map_err(log_error(handler_name))?;
     let client = get_client(&state).await.map_err(log_error(handler_name))?;
-    topic::update(&client, &frm, id)
+    let res = topic::update(&client, &frm, id, session)
         .await
         .map_err(log_error(handler_name))?;
+    if !res {
+        return Err(log_error(handler_name)(AppError::bad_request(
+            "Resource non-existent!",
+        )));
+    }
     Ok(Json(json!({})))
 }
 
@@ -115,15 +142,17 @@ pub async fn del(
 ) -> Result<Json<Value>> {
     let handler_name = "Backend/del";
     let mut conn = get_conn(&state).await.map_err(log_error(handler_name))?;
-    protect(&headers, &mut conn, &user)
+    let (_, session) = protect(&headers, &mut conn, &user)
         .await
         .map_err(log_error(handler_name))?;
     let client = get_client(&state).await.map_err(log_error(handler_name))?;
-    let res = topic::del(&client, id)
+    let res = topic::delete(&client, id, session)
         .await
         .map_err(log_error(handler_name))?;
     if !res {
-        return Err(AppError::duplication());
+        return Err(log_error(handler_name)(AppError::bad_request(
+            "Resource non-existent!",
+        )));
     }
     Ok(Json(json!({})))
 }

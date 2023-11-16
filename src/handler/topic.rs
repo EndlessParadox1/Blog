@@ -1,8 +1,8 @@
 use crate::{
     db::topic,
+    error::AppError,
     handler::{get_client, log_error},
     AppState, Result,
-    error::AppError,
 };
 use axum::{
     extract::{Path, Query},
