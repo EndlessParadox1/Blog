@@ -1,4 +1,4 @@
-use chrono::{Local, TimeZone};
+use chrono::{TimeZone, Utc};
 use serde::Serialize;
 use std::time;
 use tokio_pg_mapper_derive::PostgresMapper;
@@ -54,9 +54,9 @@ impl Topic {
 
 fn dateline(dt: time::SystemTime) -> String {
     let secs = dt.duration_since(time::UNIX_EPOCH).unwrap().as_secs() as i64;
-    Local
+    Utc
         .timestamp_opt(secs, 0)
         .unwrap()
-        .format("%Y/%m/%d %H:%M:%S")
+        .format("%Y/%m/%d %H:%M:%S Utc")
         .to_string()
 }

@@ -5,7 +5,7 @@ const SESSION_KEY_PREFIX: &str = "BLOG_SESSION:";
 
 pub async fn set_session(conn: &mut Connection, session_id: &str, value: &str) -> Result<()> {
     let redis_key = format!("{}{}", SESSION_KEY_PREFIX, session_id);
-    conn.set_ex(redis_key, value, 86400)
+    conn.set_ex(redis_key, value, 86400) // one day
         .await
         .map_err(AppError::from)?;
     Ok(())
