@@ -32,7 +32,7 @@ function index() {
                     }
                     for (let arch of data.archs) {
                         console.log(arch)
-                        let tmp = `<li><a onclick="list(${arch})" class="link">${arch}</a></li>`;
+                        let tmp = `<li><a onclick="list('${arch}')" class="link">${arch}</a></li>`;
                         archive.append(tmp);
                     }
                 } else
