@@ -28,14 +28,14 @@ pub async fn del(client: &Client, id: i64) -> Result<bool> {
 }
 
 pub async fn list_latest(client: &Client, username: String) -> Result<Vec<model::Topic>> {
-    let sql = "SELECT id, title, summary, dateline from topics WHERE writer = $1 ODER BY dateline DESC LIMIT 10";
+    let sql = "SELECT id, title, summary, dateline from topics WHERE writer = $1 ORDER BY dateline DESC LIMIT 10";
     super::query(client, sql, &[&username]).await
 }
 
 pub async fn list_arch(client: &Client, username: String, dt: String) -> Result<Vec<model::Topic>> {
     let sql =
         "SELECT id, title, summary, dateline from topics WHERE writer = $1";
-    let sql = format!("{} AND dateline BETWEEN '{}'::timestamp AND '{}'::timestamp + (INTERVAL '1' MONTH) - (INTERVAL '1' SECOND) ODER BY dateline DESC", sql, &dt, &dt);
+    let sql = format!("{} AND dateline BETWEEN '{}'::timestamp AND '{}'::timestamp + (INTERVAL '1' MONTH) - (INTERVAL '1' SECOND) ORDER BY dateline DESC", sql, &dt, &dt);
     super::query(client, &sql, &[&username]).await
 }
 
