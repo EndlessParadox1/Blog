@@ -1,3 +1,4 @@
+use std::any::type_name;
 use axum::{
     routing::{get, post},
     Extension, Router,
@@ -13,7 +14,7 @@ use blog::{
     AppState,
 };
 use deadpool_postgres::Runtime;
-use redis::Client;
+use redis::{AsyncCommands, Client};
 use std::sync::Arc;
 
 #[tokio::main]
@@ -25,6 +26,11 @@ async fn main() {
         .create_pool(Some(Runtime::Tokio1), tokio_postgres::NoTls)
         .expect("DB pool creation failed");
     let rdc = Client::open(cfg.redis.dsn).expect("Redis client creation failed");
+
+    let mut conn = rdc.get_async_connection().await.unwrap();
+    let a: i32 = conn.del('a').await.unwrap();
+    println!("{}", a);
+
     let frontend_router = frontend::router();
     let backend_router = backend::router();
     let app = Router::new()
