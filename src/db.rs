@@ -79,6 +79,6 @@ async fn execute(
 }
 
 async fn del(client: &impl GenericClient, table: &str, id: &(dyn Sync + ToSql)) -> Result<u64> {
-    let sql = format!("UPDATE {} SET is_del = true, title = null, summary = null, markdown = null, html = null, dateline = null WHERE id = $2", table);
+    let sql = format!("DELETE FROM {} WHERE id = $1", table);
     execute(client, &sql, &[id]).await
 }

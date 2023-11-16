@@ -155,7 +155,7 @@ function edit(i) {
 }
 
 function del(i) {
-    let ans = confirm('Sure to delete「{{ item.name }}」?');
+    let ans = confirm('Sure to delete?');
     if(ans) {
         fetch(`/api${path}/topic/${i}`, {
             method: 'DELETE',
