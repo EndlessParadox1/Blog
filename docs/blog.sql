@@ -7,9 +7,9 @@ CREATE TABLE topics (
     id BIGSERIAL PRIMARY KEY,
     title VARCHAR(255) NOT NULL,
     summary VARCHAR(255) NOT NULL,
-    html TEXT NOT NULL,
     markdown TEXT NOT NULL,
-    dateline TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    html TEXT NOT NULL,
+    dateline TIMESTAMP WITH TIME ZONE NOT NULL,
     writer VARCHAR(255) NOT NULL,
     FOREIGN KEY (writer) REFERENCES users (username)
 );
