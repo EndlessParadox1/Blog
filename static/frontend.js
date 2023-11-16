@@ -41,30 +41,7 @@ function index() {
         });
 }
 
-function detail(i) {
-    let div = $('#D' + i);
-    let btn = $('#B' + i);
-    div.slideToggle('fast');
-    if(btn.html() === 'Unfold')
-        btn.html('Fold')
-    else
-        btn.html('Unfold');
-    if(div.attr('data-flag') === '0') {
-        fetch(`/api/topic/${i}?level=0`)
-            .then(res => res.json())
-            .then(data => {
-                if(data.hasOwnProperty('msg'))
-                    alert('Load failed: '+ data.msg);
-                else {
-                    div.html(data.html);
-                    div.attr('data-flag', '1');
-                }
-            })
-    }
-}
-
 function list(dt) {
-    console.log(dt);
     fetch(`/api${path}/archive/${dt}`)
         .then(res => res.json())
         .then(data => {
@@ -90,4 +67,26 @@ function list(dt) {
                     content.html('Lost in time travel.');
             }
         });
+}
+
+function detail(i) {
+    let div = $('#D' + i);
+    let btn = $('#B' + i);
+    div.slideToggle('fast');
+    if(btn.html() === 'Unfold')
+        btn.html('Fold')
+    else
+        btn.html('Unfold');
+    if(div.attr('data-flag') === '0') {
+        fetch(`/api/topic/${i}?level=0`)
+            .then(res => res.json())
+            .then(data => {
+                if(data.hasOwnProperty('msg'))
+                    alert('Load failed: '+ data.msg);
+                else {
+                    div.html(data.html);
+                    div.attr('data-flag', '1');
+                }
+            })
+    }
 }
