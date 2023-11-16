@@ -27,7 +27,7 @@ fetch('/api' + path, {credentials: 'include'})
 function logout() {
     let ans = confirm('Sure to sign out?');
     if(ans) {
-        fetch('/api/logout', {credentials: 'include'})
+        fetch(`/api${path}/logout`, {credentials: 'include'})
             .then(res => res.json())
             .then(data => {
                 if(data.hasOwnProperty('msg'))

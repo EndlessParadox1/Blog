@@ -2,6 +2,7 @@ use crate::{
     db::topic,
     handler::{get_client, log_error},
     AppState, Result,
+    error::AppError,
 };
 use axum::{
     extract::{Path, Query},
@@ -21,19 +22,31 @@ pub async fn topic(
     Path(id): Path<i64>,
     Query(args): Query<Args>,
 ) -> Result<Json<Value>> {
-    let handler_name = "/topic";
+    let handler_name = "Topic";
     let client = get_client(&state).await.map_err(log_error(handler_name))?;
     if args.level == 0 {
-        let tmp = topic::content(&client, id)
+        let mut tmp = topic::content(&client, id)
             .await
             .map_err(log_error(handler_name))?;
-        let html = tmp.html;
+        if tmp.is_empty() {
+            return Err(log_error(handler_name)(AppError::bad_request(
+                "Data required non-existent!",
+            )));
+        }
+        let topic = tmp.pop().unwrap();
+        let html = topic.html;
         Ok(Json(json!({"html": html})))
     } else {
-        let tmp = topic::edit_data(&client, id)
+        let mut tmp = topic::edit_data(&client, id)
             .await
             .map_err(log_error(handler_name))?;
-        let (title, summary, markdown) = (tmp.title, tmp.summary, tmp.markdown);
+        if tmp.is_empty() {
+            return Err(log_error(handler_name)(AppError::bad_request(
+                "Data required non-existent!",
+            )));
+        }
+        let topic = tmp.pop().unwrap();
+        let (title, summary, markdown) = (topic.title, topic.summary, topic.markdown);
         Ok(Json(
             json!({"title": title, "summary": summary, "markdown": markdown}),
         ))

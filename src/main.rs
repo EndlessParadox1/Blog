@@ -1,16 +1,10 @@
-use std::any::type_name;
 use axum::{
     routing::{get, post},
     Extension, Router,
 };
 use blog::{
     config::Config,
-    handler::{
-        backend, frontend,
-        login::{login, logout},
-        register::register,
-        topic::topic,
-    },
+    handler::{backend, frontend, login::login, register::register, topic::topic},
     AppState,
 };
 use deadpool_postgres::Runtime;
@@ -26,11 +20,6 @@ async fn main() {
         .create_pool(Some(Runtime::Tokio1), tokio_postgres::NoTls)
         .expect("DB pool creation failed");
     let rdc = Client::open(cfg.redis.dsn).expect("Redis client creation failed");
-
-    let mut conn = rdc.get_async_connection().await.unwrap();
-    let a: i32 = conn.del('a').await.unwrap();
-    println!("{}", a);
-
     let frontend_router = frontend::router();
     let backend_router = backend::router();
     let app = Router::new()
@@ -38,7 +27,6 @@ async fn main() {
         .nest("/admin/:user", backend_router)
         .route("/topic/:id", get(topic))
         .route("/register", post(register))
-        .route("/logout", get(logout))
         .route("/login", post(login))
         .layer(Extension(Arc::new(AppState { pool, rdc })));
     tracing::info!("Server start: {}", &cfg.web.addr);

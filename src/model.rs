@@ -54,8 +54,7 @@ impl Topic {
 
 fn dateline(dt: time::SystemTime) -> String {
     let secs = dt.duration_since(time::UNIX_EPOCH).unwrap().as_secs() as i64;
-    Utc
-        .timestamp_opt(secs, 0)
+    Utc.timestamp_opt(secs, 0)
         .unwrap()
         .format("%Y/%m/%d %H:%M:%S Utc")
         .to_string()

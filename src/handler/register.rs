@@ -1,9 +1,10 @@
 use crate::{
     db::user,
-    error::{AppError, AppErrorType},
+    error::AppError,
     form::User,
-    handler::{get_client, log_error},
+    handler::{get_client, get_conn, log_error},
     password::hash,
+    rds::{add_user, is_user},
     AppState, Result,
 };
 use axum::{extract::Extension, Json};
@@ -19,21 +20,27 @@ pub async fn register(
     Extension(state): Extension<Arc<AppState>>,
     Json(frm): Json<User>,
 ) -> Result<Json<Value>> {
-    let handler_name = "/register";
+    let handler_name = "Register";
     if !UN_VALID.is_match(&frm.username) || !PW_VALID.is_match(&frm.password) {
-        return Err(AppError::bad_register());
+        return Err(log_error(handler_name)(AppError::bad_request(
+            "Some field wrong!",
+        )));
     }
     let client = get_client(&state).await.map_err(log_error(handler_name))?;
-    match user::find(&client, &frm.username).await {
-        Ok(_) => return Err(AppError::multi_register()),
-        Err(err) => {
-            if err.types != AppErrorType::NotFound {
-                return Err(err);
-            }
-        }
+    let mut conn = get_conn(&state).await.map_err(log_error(handler_name))?;
+    let res = is_user(&mut conn, &frm.username)
+        .await
+        .map_err(log_error(handler_name))?;
+    if res {
+        return Err(log_error(handler_name)(AppError::bad_request(
+            "Username existed!",
+        )));
     }
-    let password = hash(&frm.password)?;
+    let password = hash(&frm.password).map_err(log_error(handler_name))?;
     user::create(&client, &frm.username, &password)
+        .await
+        .map_err(log_error(handler_name))?;
+    add_user(&mut conn, &frm.username)
         .await
         .map_err(log_error(handler_name))?;
     Ok(Json(json!({})))

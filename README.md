@@ -10,9 +10,8 @@ This project is organized as follows:
 
 ```
 .
-├── docs: 
-├── scripts: 
-├── static: Files for the client-side user interface.
+├── docs: Profile and database structure.
+├── static: Html and JS for client.
 └── src: Server-side application.
     ├── db: 
     ├── handler: 

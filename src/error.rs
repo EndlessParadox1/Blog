@@ -9,17 +9,14 @@ use std::{
     fmt::{Display, Formatter, Result},
 };
 
-#[derive(Debug, PartialEq)]
-pub enum AppErrorType {
-    NotFound,
-    Db,
-    Chrono,
-    Crypt,
-    IncorrectLogin,
-    IncorrectRegister,
-    Unauthorized,
+#[derive(Debug)]
+enum AppErrorType {
     Redis,
-    Duplication,
+    Db,
+    Crypt,
+    BadRequest,
+    NotFound,
+    Unauthorized,
 }
 
 #[derive(Debug)]
@@ -46,34 +43,16 @@ impl AppError {
         Self::new(Some(msg.to_string()), None, types)
     }
 
-    pub fn notfound_opt(message: Option<String>) -> Self {
-        Self::new(message, None, AppErrorType::NotFound)
+    pub fn bad_request(msg: &str) -> Self {
+        Self::from_str(msg, AppErrorType::BadRequest)
     }
 
-    pub fn incorrect_login() -> Self {
-        Self::from_str(
-            "Username or password incorrect!",
-            AppErrorType::IncorrectLogin,
-        )
+    pub fn not_found(msg: &str) -> Self {
+        Self::from_str(msg, AppErrorType::NotFound)
     }
 
-    pub fn multi_register() -> Self {
-        Self::from_str("Username existed!", AppErrorType::IncorrectRegister)
-    }
-
-    pub fn bad_register() -> Self {
-        Self::from_str(
-            "Content submitted incorrect!",
-            AppErrorType::IncorrectRegister,
-        )
-    }
-
-    pub fn unauthorized() -> Self {
-        Self::from_str("Unauthorized, please sign in!", AppErrorType::Unauthorized)
-    }
-
-    pub fn duplication() -> Self {
-        Self::from_str("Repetitive action!", AppErrorType::Duplication)
+    pub fn unauthorized(msg: &str) -> Self {
+        Self::from_str(msg, AppErrorType::Unauthorized)
     }
 }
 
@@ -96,11 +75,6 @@ impl From<deadpool_postgres::PoolError> for AppError {
         Self::from_err(Box::new(err), AppErrorType::Db)
     }
 }
-impl From<chrono::ParseError> for AppError {
-    fn from(err: chrono::ParseError) -> Self {
-        Self::from_err(Box::new(err), AppErrorType::Chrono)
-    }
-}
 
 impl From<bcrypt::BcryptError> for AppError {
     fn from(err: bcrypt::BcryptError) -> Self {
@@ -118,15 +92,14 @@ impl IntoResponse for AppError {
     fn into_response(self) -> Response {
         let code = match self.types {
             AppErrorType::Unauthorized => StatusCode::UNAUTHORIZED,
-            AppErrorType::IncorrectLogin
-            | AppErrorType::IncorrectRegister
-            | AppErrorType::Duplication => StatusCode::BAD_REQUEST,
+            AppErrorType::BadRequest => StatusCode::BAD_REQUEST,
+            AppErrorType::NotFound => StatusCode::NOT_FOUND,
             _ => StatusCode::INTERNAL_SERVER_ERROR,
         };
         let msg = self
             .message
             .to_owned()
-            .unwrap_or("Something wrong happened!".to_string());
+            .unwrap_or("Something went wrong!".to_string());
         (code, Json(json!({"msg": msg}))).into_response()
     }
 }

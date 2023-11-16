@@ -1,10 +1,4 @@
-use crate::{
-    db::topic,
-    error::AppError,
-    form::Topic,
-    handler::{auth::protect, get_client, get_conn, log_error},
-    AppState, Result,
-};
+use crate::{db::topic, error::AppError, form::Topic, handler::{auth::protect, get_client, get_conn, log_error}, rds::del_session, session::get_session_id, AppState, Result, session};
 use axum::{
     extract::Path,
     headers::HeaderMap,
@@ -18,6 +12,7 @@ use std::sync::Arc;
 pub fn router() -> Router {
     Router::new()
         .route("/", get(index))
+        .route("/logout", get(logout))
         .route("/topic", get(list).post(add))
         .route("/topic/:id", put(edit).delete(del))
 }
@@ -27,9 +22,25 @@ pub async fn index(
     Path(user): Path<String>,
     headers: HeaderMap,
 ) -> Result<Json<Value>> {
-    let handler_name = "/backend/index";
+    let handler_name = "Backend/index";
     let mut conn = get_conn(&state).await.map_err(log_error(handler_name))?;
     protect(&headers, &mut conn, &user)
+        .await
+        .map_err(log_error(handler_name))?;
+    Ok(Json(json!({})))
+}
+
+pub async fn logout(
+    Extension(state): Extension<Arc<AppState>>,
+    Path(user): Path<String>,
+    headers: HeaderMap,
+) -> Result<Json<Value>> {
+    let handler_name = "Backend/logout";
+    let mut conn = get_conn(&state).await.map_err(log_error(handler_name))?;
+    let session_id = protect(&headers, &mut conn, &user)
+        .await
+        .map_err(log_error(handler_name))?;
+    del_session(&mut conn, &session_id)
         .await
         .map_err(log_error(handler_name))?;
     Ok(Json(json!({})))
@@ -40,7 +51,7 @@ pub async fn list(
     Path(user): Path<String>,
     headers: HeaderMap,
 ) -> Result<Json<Value>> {
-    let handler_name = "/backend/list";
+    let handler_name = "Backend/list";
     let mut conn = get_conn(&state).await.map_err(log_error(handler_name))?;
     protect(&headers, &mut conn, &user)
         .await
@@ -67,7 +78,7 @@ pub async fn add(
     headers: HeaderMap,
     Json(frm): Json<Topic>,
 ) -> Result<Json<Value>> {
-    let handler_name = "/backend/add";
+    let handler_name = "Backend/add";
     let mut conn = get_conn(&state).await.map_err(log_error(handler_name))?;
     protect(&headers, &mut conn, &user)
         .await
@@ -85,7 +96,7 @@ pub async fn edit(
     headers: HeaderMap,
     Json(frm): Json<Topic>,
 ) -> Result<Json<Value>> {
-    let handler_name = "/backend/edit";
+    let handler_name = "Backend/edit";
     let mut conn = get_conn(&state).await.map_err(log_error(handler_name))?;
     protect(&headers, &mut conn, &user)
         .await
@@ -102,7 +113,7 @@ pub async fn del(
     Path((user, id)): Path<(String, i64)>,
     headers: HeaderMap,
 ) -> Result<Json<Value>> {
-    let handler_name = "/backend/del";
+    let handler_name = "Backend/del";
     let mut conn = get_conn(&state).await.map_err(log_error(handler_name))?;
     protect(&headers, &mut conn, &user)
         .await

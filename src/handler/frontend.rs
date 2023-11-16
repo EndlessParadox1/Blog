@@ -1,8 +1,9 @@
 use crate::{
     db::topic,
-    db::user,
-    handler::{get_client, log_error},
+    handler::{get_client, log_error, get_conn},
     AppState, Result,
+    rds::is_user,
+    error::AppError,
 };
 use axum::{extract::Path, routing::get, Extension, Json, Router};
 use serde_json::{json, Value};
@@ -19,11 +20,13 @@ pub async fn index(
     Extension(state): Extension<Arc<AppState>>,
     Path(user): Path<String>,
 ) -> Result<Json<Value>> {
-    let handler_name = "/frontend/index";
+    let handler_name = "Frontend/index";
     let client = get_client(&state).await.map_err(log_error(handler_name))?;
-    user::find(&client, &user)
-        .await
-        .map_err(log_error(handler_name))?;
+    let mut conn = get_conn(&state).await.map_err(log_error(handler_name))?;
+    let res = is_user(&mut conn, &user).await.map_err(log_error(handler_name))?;
+    if !res {
+        return Err(log_error(handler_name)(AppError::bad_request("User non-existent!")));
+    }
     let topics = topic::list_latest(&client, user.clone())
         .await
         .map_err(log_error(handler_name))?;
@@ -56,11 +59,13 @@ pub async fn archive(
     Extension(state): Extension<Arc<AppState>>,
     Path((user, dt)): Path<(String, String)>,
 ) -> Result<Json<Value>> {
-    let handler_name = "/frontend/index";
+    let handler_name = "Frontend/archive";
     let client = get_client(&state).await.map_err(log_error(handler_name))?;
-    user::find(&client, &user)
-        .await
-        .map_err(log_error(handler_name))?;
+    let mut conn = get_conn(&state).await.map_err(log_error(handler_name))?;
+    let res = is_user(&mut conn, &user).await.map_err(log_error(handler_name))?;
+    if !res {
+        return Err(log_error(handler_name)(AppError::bad_request("User non-existent!")));
+    }
     let dt = format!("{}-01 00:00:00", dt);
     let topics = topic::list_arch(&client, user.clone(), dt)
         .await

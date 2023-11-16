@@ -9,10 +9,12 @@ pub mod login;
 pub mod register;
 pub mod topic;
 
+// get client from pg pool
 async fn get_client(state: &AppState) -> Result<Client> {
     state.pool.get().await.map_err(AppError::from)
 }
 
+// get connection from redis client
 async fn get_conn(state: &AppState) -> Result<Connection> {
     state
         .rdc

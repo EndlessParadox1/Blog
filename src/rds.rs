@@ -2,6 +2,7 @@ use crate::{error::AppError, Result};
 use redis::{aio::Connection, AsyncCommands};
 
 const SESSION_KEY_PREFIX: &str = "BLOG_SESSION:";
+const USER_LIST: &str = "BLOG_USERS";
 
 pub async fn set_session(conn: &mut Connection, session_id: &str, value: &str) -> Result<()> {
     let redis_key = format!("{}{}", SESSION_KEY_PREFIX, session_id);
@@ -19,6 +20,19 @@ pub async fn del_session(conn: &mut Connection, session_id: &str) -> Result<()> 
 
 pub async fn get_session(conn: &mut Connection, session_id: &str) -> Result<Option<String>> {
     let redis_key = format!("{}{}", SESSION_KEY_PREFIX, session_id);
-    let tmp: Option<String> = conn.get(redis_key).await.map_err(AppError::from)?;
-    Ok(tmp)
+    let s: Option<String> = conn.get(redis_key).await.map_err(AppError::from)?;
+    Ok(s)
+}
+
+pub async fn add_user(conn: &mut Connection, value: &str) -> Result<()> {
+    conn.sadd(USER_LIST, value).await.map_err(AppError::from)?;
+    Ok(())
+}
+
+pub async fn is_user(conn: &mut Connection, value: &str) -> Result<bool> {
+    let n = conn
+        .sismember(USER_LIST, value)
+        .await
+        .map_err(AppError::from)?;
+    Ok(n > 0)
 }

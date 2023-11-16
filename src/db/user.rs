@@ -1,8 +1,8 @@
 use crate::{model::User, Result};
 use tokio_postgres::Client;
 
-pub async fn find(client: &Client, username: &str) -> Result<User> {
-    super::query_row(
+pub async fn find(client: &Client, username: &str) -> Result<Vec<User>> {
+    super::query(
         client,
         "SELECT * FROM users WHERE username = $1",
         &[&username],
