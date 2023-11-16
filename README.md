@@ -17,11 +17,11 @@ This project is organized as follows:
     ├── handler: 
     ├── config: 
     ├── error: 
-    ├── form
-    ├── md
-    ├── model
-    ├── password
-    ├── rds
+    ├── form:
+    ├── md:
+    ├── model:
+    ├── password:
+    ├── rds:
     └── session: 
 ```
 
