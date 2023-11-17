@@ -53,12 +53,12 @@ so that learn and practice such as `Linux`, `PostgreSQL`, `Redis`, `Tokio/Axum`,
 
 ## Guide
 
-1. Config your redis and postgresql.
-2. Config Nginx by include `blog_nginx.conf` in .../nginx/conf.d/
-3. 
-4. 
-5. 
-6. 
+1. Git clone the project.
+2. Config your Redis and Postgresql.
+3. Include `blog_nginx.conf` in .../nginx/conf.d.
+4. Custom the `config.toml`.
+5. Generate the exe with `cargo build --release`.
+6. Finally, start the server with `nohup ./blog > .../out.blog 2 > &1 &`.
 
 ## Contributing
 
