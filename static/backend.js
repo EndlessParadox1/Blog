@@ -66,7 +66,7 @@ function new_() {
                     if (data.hasOwnProperty('msg'))
                         alert('Post failed: ' + data.msg);
                     else
-                        new_();
+                        list();
                 });
         }
         });
