@@ -4,7 +4,7 @@ use axum::{
 };
 use blog::{
     config::Config,
-    handler::{backend, frontend, login::login, register::register, topic::topic},
+    handler::{admin, front, login::login, register::register, topic::topic},
     AppState,
 };
 use deadpool_postgres::Runtime;
@@ -20,11 +20,11 @@ async fn main() {
         .create_pool(Some(Runtime::Tokio1), tokio_postgres::NoTls)
         .expect("DB pool creation failed");
     let rdc = Client::open(cfg.redis.dsn).expect("Redis client creation failed");
-    let frontend_router = frontend::router();
-    let backend_router = backend::router();
+    let front_router = front::router();
+    let admin_router = admin::router();
     let app = Router::new()
-        .nest("/user/:user", frontend_router)
-        .nest("/admin/:user", backend_router)
+        .nest("/user/:user", front_router)
+        .nest("/admin/:user", admin_router)
         .route("/topic/:id", get(topic))
         .route("/register", post(register))
         .route("/login", post(login))

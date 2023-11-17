@@ -13,16 +13,25 @@ This project is organized as follows:
 ├── docs: Profile and database structure.
 ├── static: Html and JS for client.
 └── src: Server-side application.
-    ├── db: 
-    ├── handler: 
-    ├── config: 
-    ├── error: 
-    ├── form:
-    ├── md:
-    ├── model:
-    ├── password:
-    ├── rds:
-    └── session: 
+    ├── config: Init config from toml.
+    ├── error: Unifying error.
+    ├── form: Form submitted from client.
+    ├── md: Converting md to html.
+    ├── model: Data read from DB.
+    ├── password: Hashing and verifying password.
+    ├── rds: Managing session and user_list.
+    ├── session: Managing session_id.
+    ├── db
+    │   ├── topic: Operation for topics.
+    │   └── user: Operation for users.
+    └── handler
+        ├── auth: Protection for admin.
+        ├── admin: Handling admin UI request.
+        ├── front: Handling front UI request.
+        ├── login: Handling login request.
+        ├── register: Handling register request.
+        └── topic: Handling detail of topic request.
+    
 ```
 
 ## Background
@@ -31,16 +40,32 @@ Intend to develop a simple web application as full-stack developer
 so that learn and practice such as `Linux`, `PostgreSQL`, `Redis`, `Tokio/Axum`, `jQuery`, `Nginx` etc. 
 
 ## Highlights
-*ToDo*
+
+1. Use session for auth.
+2. Frontend and backend separation. 
+3. Use Cloudfare for cache, DNS, protection and gateway.
+4. Use Nginx for dynamic and static separation.
+5. Use REST API style.
+6. Implement single page app.
+7. Use complete TLS for security.
+8. Async server mode implemented by Tokio/Axum.
+
 
 ## Guide
-*ToDo*
+
+1. Config your redis and postgresql.
+2. Config Nginx by include `blog_nginx.conf` in .../nginx/conf.d/
+3. 
+4. 
+5. 
+6. 
 
 ## Contributing
 
 Issues and Pull Requests are accepted. Feel free to contribute to this project.
 
 ## Reference
+
 * [漫游Axum](https://axum.rs/subject/roaming-axum)
 * [使用axum构建博客系统](https://axum.rs/subject/blog)
 * [Rust Course](https://course.rs/about-book.html)

@@ -47,7 +47,7 @@
             let username = $('#username').val();
             let password = $('#password').val();
             if (!/^[a-zA-Z_]{4,16}$/.test(username) || !/^[a-zA-Z0-9]{8,20}$/.test(password)) {
-                alert('Some field wrong!');
+                alert('Some field is wrong!');
                 return;
             }
             let message = $('#message');

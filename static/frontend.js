@@ -11,7 +11,7 @@ function index() {
         .then(res => res.json())
         .then(data => {
             if(data.hasOwnProperty('msg'))
-                alert('Load failed: ' + data.msg);
+                alert(data.msg);
             else {
                 top_.html(path.replace('/user/', '') + "'s Blog");
                 header.html('Latest 10');

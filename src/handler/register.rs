@@ -23,7 +23,7 @@ pub async fn register(
     let handler_name = "Register";
     if !UN_VALID.is_match(&frm.username) || !PW_VALID.is_match(&frm.password) {
         return Err(log_error(handler_name)(AppError::bad_request(
-            "Some field wrong!",
+            "Some field is wrong!",
         )));
     }
     let client = get_client(&state).await.map_err(log_error(handler_name))?;

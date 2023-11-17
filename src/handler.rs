@@ -2,9 +2,9 @@ use crate::{error::AppError, AppState, Result};
 use deadpool_postgres::Client;
 use redis::aio::Connection;
 
+pub mod admin;
 mod auth;
-pub mod backend;
-pub mod frontend;
+pub mod front;
 pub mod login;
 pub mod register;
 pub mod topic;

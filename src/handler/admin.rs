@@ -91,9 +91,10 @@ pub async fn add(
     Json(frm): Json<Topic>,
 ) -> Result<Json<Value>> {
     let handler_name = "Backend/add";
-    if !TI_VALID.is_match(&frm.title) || !SU_VALID.is_match(&frm.summary) || frm.markdown.is_empty() {
+    if !TI_VALID.is_match(&frm.title) || !SU_VALID.is_match(&frm.summary) || frm.markdown.is_empty()
+    {
         return Err(log_error(handler_name)(AppError::bad_request(
-            "Some field wrong!",
+            "Some field is wrong!",
         )));
     }
     let mut conn = get_conn(&state).await.map_err(log_error(handler_name))?;
@@ -114,9 +115,10 @@ pub async fn edit(
     Json(frm): Json<Topic>,
 ) -> Result<Json<Value>> {
     let handler_name = "Backend/edit";
-    if !TI_VALID.is_match(&frm.title) || !SU_VALID.is_match(&frm.summary) || frm.markdown.is_empty() {
+    if !TI_VALID.is_match(&frm.title) || !SU_VALID.is_match(&frm.summary) || frm.markdown.is_empty()
+    {
         return Err(log_error(handler_name)(AppError::bad_request(
-            "Some field wrong!",
+            "Some field is wrong!",
         )));
     }
     let mut conn = get_conn(&state).await.map_err(log_error(handler_name))?;
