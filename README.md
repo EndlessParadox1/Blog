@@ -41,13 +41,13 @@ so that learn and practice such as `Linux`, `PostgreSQL`, `Redis`, `Tokio/Axum`,
 
 ## Highlights
 
-1. Use session for auth.
+1. Session for auth.
 2. Frontend and backend separation. 
-3. Use Cloudfare for cache, DNS, protection and gateway.
-4. Use Nginx for dynamic and static separation.
-5. Use REST API style.
+3. Cloudfare for cache, DNS and protection.
+4. Dynamic and static separation & gateway served by Nginx.
+5. Obey REST API norm.
 6. Implement single page app.
-7. Use complete TLS for security.
+7. Complete TLS for security.
 8. Async server mode implemented by Tokio/Axum.
 
 
