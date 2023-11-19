@@ -4,72 +4,71 @@ let header = $('#header');
 let content = $('#content');
 let archive = $('#archive');
 
-index();
+$(async () => await index())
 
-function index() {
-    fetch('/api' + path)
-        .then(res => res.json())
-        .then(data => {
-            if(data.hasOwnProperty('msg'))
-                alert(data.msg);
-            else {
-                top_.html(path.replace('/user/', '') + "'s Blog");
-                header.html('Latest 10');
-                content.html('');
-                archive.html('');
-                if(data.hasOwnProperty('ids')) {
-                    let ids = data.ids;
-                    let titles = data.titles;
-                    let summaries = data.summaries;
-                    let times = data.times;
-                    for (let i = 0; i < ids.length; i++) {
-                        let tmp = `<article class="blog-post">` +
-                            `<h2 class="blog-post-title">${titles[i]}</h2>` +
-                            `<p class="blog-post-meta">Post on ${times[i]}</p>` +
-                            `${summaries[i]}<hr><div id="D${ids[i]}" class="detail" data-flag="0"></div>` +
-                            `<div id="B${ids[i]}" class="btn btn-sm btn-light" onclick="detail(${ids[i]})">Unfold</div></article>`;
-                        content.append(tmp);
-                    }
-                    for (let arch of data.archs) {
-                        let tmp = `<li><a onclick="list('${arch}')" class="link">${arch}</a></li>`;
-                        archive.append(tmp);
-                    }
-                } else
-                    content.html('There is nothing yet.');
+async function index() {
+    let res = await fetch('/api' + path);
+    let data = await res.json();
+    if(!res.ok)
+        alert(data.msg);
+    else {
+        top_.html(path.replace('/user/', '') + "'s Blog");
+        header.html('Latest 10');
+        content.html('');
+        archive.html('');
+        if(!$.isEmptyObject(data)) {
+            let ids = data.ids;
+            let titles = data.titles;
+            let summaries = data.summaries;
+            let times = data.times;
+            for (let i = 0; i < ids.length; i++) {
+                let tmp = `<article class="blog-post">` +
+                    `<h2 class="blog-post-title">${titles[i]}</h2>` +
+                    `<p class="blog-post-meta">Post on ${times[i]}</p>` +
+                    `${summaries[i]}<hr><div id="D${ids[i]}" class="detail" data-flag="0"></div>` +
+                    `<div id="B${ids[i]}" class="btn btn-sm btn-light">Unfold</div></article>`;
+                $('#B' + ids[i]).click(async () => await detail(ids[i]));
+                content.append(tmp);
             }
-        });
+            for (let arch of data.archs) {
+                let tmp = `<li><a id="'${arch}'" class="link">${arch}</a></li>`;
+                $(`#${arch}`).click(async () => await list(`'${arch}'`));
+                archive.append(tmp);
+            }
+        } else
+            content.html('There is nothing yet.');
+    }
 }
 
-function list(dt) {
-    fetch(`/api${path}/archive/${dt}`)
-        .then(res => res.json())
-        .then(data => {
-            if (data.hasOwnProperty('msg'))
-                alert('Load failed: ' + data.msg);
-            else {
-                header.html(dt);
-                content.html('');
-                if (data.hasOwnProperty('ids')) {
-                    let ids = data.ids;
-                    let titles = data.titles;
-                    let summaries = data.summaries;
-                    let times = data.times;
-                    for (let i = 0; i < ids.length; i++) {
-                        let tmp = `<article class="blog-post">` +
-                            `<h2 class="blog-post-title">${titles[i]}</h2>` +
-                            `<p class="blog-post-meta">Post on ${times[i]}</p>` +
-                            `${summaries[i]}<hr><div id="D${ids[i]}" class="detail" data-flag="0"></div>` +
-                            `<div id="B${ids[i]}" class="btn btn-sm btn-light" onclick="detail(${ids[i]})">Unfold</div></article>`;
-                        content.append(tmp);
-                    }
-                } else
-                    content.html('Lost in time travel.');
+async function list(dt) {
+    let res = await fetch(`/api${path}/archive/${dt}`);
+    let data = await res.json();
+    if (!res.ok)
+        alert('Load failed: ' + data.msg);
+    else {
+        header.html(dt);
+        content.html('');
+        if(!$.isEmptyObject(data)) {
+            let ids = data.ids;
+            let titles = data.titles;
+            let summaries = data.summaries;
+            let times = data.times;
+            for (let i = 0; i < ids.length; i++) {
+                let tmp = `<article class="blog-post">` +
+                    `<h2 class="blog-post-title">${titles[i]}</h2>` +
+                    `<p class="blog-post-meta">Post on ${times[i]}</p>` +
+                    `${summaries[i]}<hr><div id="D${ids[i]}" class="detail" data-flag="0"></div>` +
+                    `<div id="B${ids[i]}" class="btn btn-sm btn-light">Unfold</div></article>`;
+                $('#B' + ids[i]).click(async () => await detail(ids[i]));
+                content.append(tmp);
             }
-        });
+        } else
+            content.html('Lost in time travel.');
+    }
 }
 
-function detail(i) {
-    let div = $('#D' + i);
+async function detail(i) {
+    let div = $('#C' + i);
     let btn = $('#B' + i);
     div.slideToggle();
     if(btn.html() === 'Unfold')
@@ -77,15 +76,13 @@ function detail(i) {
     else
         btn.html('Unfold');
     if(div.attr('data-flag') === '0') {
-        fetch(`/api/topic/${i}?level=0`)
-            .then(res => res.json())
-            .then(data => {
-                if(data.hasOwnProperty('msg'))
-                    alert('Load failed: '+ data.msg);
-                else {
-                    div.html(data.html);
-                    div.attr('data-flag', '1');
-                }
-            });
+        let res = await fetch(`/api/topic/${i}?level=0`);
+        let data = await res.json();
+        if(!res.ok)
+            alert('Load failed: ' + data.msg);
+        else {
+            div.html(data.html);
+            div.attr('data-flag', '1');
+        }
     }
 }

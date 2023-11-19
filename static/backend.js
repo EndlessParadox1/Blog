@@ -10,17 +10,19 @@ let table = '<div class="mb-2">' +
     '<textarea id="markdown" class="form-control" placeholder="Please write in Markdwon format" rows="15"></textarea></div>' +
     '<div style="text-align: center">';
 
-let res = await fetch('/api' + path, {credentials: 'include'});
-if(!res.ok) {
-    let err = await res.json();
-    alert(err.msg);
-} else {
-    $('#home').attr('href', path.replace('admin', 'user'));
-    header.html('Hi, ' + path.replace('/admin/', ''));
-    $('#logout').click(() => logout());
-    $('#new').click(() => new_());
-    $('#all').click(() => list());
-}
+$(async () => {
+    let res = await fetch('/api' + path, {credentials: 'include'});
+    if(!res.ok) {
+        let err = await res.json();
+        alert(err.msg);
+    } else {
+        $('#home').attr('href', path.replace('admin', 'user'));
+        header.html('Hi, ' + path.replace('/admin/', ''));
+        $('#logout').click(async () => await logout());
+        $('#new').click(() => new_());
+        $('#all').click(async () => await list());
+    }
+})
 
 async function logout() {
     let ans = confirm('Sure to sign out?');
@@ -56,12 +58,12 @@ function new_() {
                     'markdown': markdown
                 })
             });
-                if(!res.ok) {
-                    let err = res.json();
-                    alert('Post failed: ' + err.msg);
-                }
-                else
-                    await list();
+            if(!res.ok) {
+                let err = res.json();
+                alert('Post failed: ' + err.msg);
+            }
+            else
+                await list();
         }
     });
 }
@@ -85,10 +87,13 @@ async function list() {
             let body = $('#body');
             for (let k = 0; k < ids.length; k++) {
                 tmp = `<tr class="trow"><td>#${i}</td><td>${titles[k]}</td>` +
-                    `<td><div class="btn btn-info btn-sm" onclick="edit(${ids[k]})">Modify</div>` +
-                    `<div class="btn btn-danger btn-sm" onClick="del(${ids[k]})">Delete</div></td>` +
-                    `<td><div id="B${ids[k]}" class="btn btn-light btn-sm" onclick="detail(${ids[k]})">▲</div></td></tr>` +
-                    `<tr><td colspan="4" id="D${ids[k]}" class="detail" data-flag="0"></td></tr>`;
+                    `<td><div class="btn btn-info btn-sm" id="E${ids[k]}">Modify</div>` +
+                    `<div class="btn btn-danger btn-sm" id="D${ids[k]}">Delete</div></td>` +
+                    `<td><div id="B${ids[k]}" class="btn btn-light btn-sm">▲</div></td></tr>` +
+                    `<tr><td colspan="4" id="C${ids[k]}" class="detail" data-flag="0"></td></tr>`;
+                $('#E' + ids[k]).click(async () => await edit(ids[k]));
+                $('#D' + ids[k]).click(async () => await del(ids[k]));
+                $('#B' + ids[k]).click(async () => await detail(ids[k]));
                 body.append(tmp);
                 i++;
             }
@@ -148,19 +153,17 @@ async function del(i) {
         let res = await fetch(`/api${path}/topic/${i}`, {
             method: 'DELETE',
             credentials: 'include'
-        })
-            .then(res => res.json())
-            .then(async data => {
-                if (data.hasOwnProperty('msg'))
-                    alert('Delete failed: ' + data.msg);
-                else
-                    await list();
-            });
+        });
+        if(!res.ok) {
+            let err = await res.json();
+            alert('Delete failed: ' + err.msg);
+        } else
+            await list();
     }
 }
 
-function detail(i) {
-    let div = $('#D' + i);
+async function detail(i) {
+    let div = $('#C' + i);
     let btn = $('#B' + i);
     div.slideToggle();
     if(btn.html() === '▲')
@@ -168,15 +171,13 @@ function detail(i) {
     else
         btn.html('▲');
     if(div.attr('data-flag') === '0') {
-        fetch(`/api/topic/${i}?level=0`)
-            .then(res => res.json())
-            .then(data => {
-                if(data.hasOwnProperty('msg'))
-                    alert('Load failed: ' + data.msg);
-                else {
-                    div.html(data.html);
-                    div.attr('data-flag', '1');
-                }
-            })
+        let res = await fetch(`/api/topic/${i}?level=0`);
+        let data = await res.json();
+        if(!res.ok)
+            alert('Load failed: ' + data.msg);
+        else {
+            div.html(data.html);
+            div.attr('data-flag', '1');
+        }
     }
 }
