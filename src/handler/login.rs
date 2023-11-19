@@ -2,14 +2,12 @@ use crate::{
     db::user,
     error::AppError,
     form::User,
-    handler::{get_client, get_conn, log_error},
+    handler::{get_client, get_conn, log_error, RedirectView, redirect_with_session},
     password,
     rds::set_session,
-    session::set_session_id,
     AppState, Result,
 };
 use axum::{extract::Extension, Json};
-use serde_json::{json, Value};
 use std::sync::Arc;
 use uuid::Uuid;
 
@@ -40,6 +38,6 @@ pub async fn login(
     set_session(&mut conn, &session_id, &user_info.username)
         .await
         .map_err(log_error(handler_name))?;
-    let cookie = set_session_id(&session_id);
-    Ok(Json(json!({"cookie": cookie})))
+    let url = format!("/admin/{}", &user_info.username);
+    redirect_with_session(&url, Some(&session_id))
 }
