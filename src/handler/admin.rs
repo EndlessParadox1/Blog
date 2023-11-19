@@ -2,7 +2,7 @@ use crate::{
     db::topic,
     error::AppError,
     form::Topic,
-    handler::{auth::protect, get_client, get_conn, log_error},
+    handler::{auth::protect, get_client, get_conn, log_error, redirect, RedirectView},
     rds::del_session,
     AppState, Result,
 };
@@ -33,20 +33,20 @@ pub async fn index(
     Extension(state): Extension<Arc<AppState>>,
     Path(user): Path<String>,
     headers: HeaderMap,
-) -> Result<Json<Value>> {
+) -> Result<()> {
     let handler_name = "Backend/index";
     let mut conn = get_conn(&state).await.map_err(log_error(handler_name))?;
     protect(&headers, &mut conn, &user)
         .await
         .map_err(log_error(handler_name))?;
-    Ok(Json(json!({})))
+    Ok(())
 }
 
 pub async fn logout(
     Extension(state): Extension<Arc<AppState>>,
     Path(user): Path<String>,
     headers: HeaderMap,
-) -> Result<Json<Value>> {
+) -> Result<RedirectView> {
     let handler_name = "Backend/logout";
     let mut conn = get_conn(&state).await.map_err(log_error(handler_name))?;
     let (session_id, _) = protect(&headers, &mut conn, &user)
@@ -55,7 +55,7 @@ pub async fn logout(
     del_session(&mut conn, &session_id)
         .await
         .map_err(log_error(handler_name))?;
-    Ok(Json(json!({})))
+    redirect("/login.html")
 }
 
 pub async fn list(
@@ -89,7 +89,7 @@ pub async fn add(
     Path(user): Path<String>,
     headers: HeaderMap,
     Json(frm): Json<Topic>,
-) -> Result<Json<Value>> {
+) -> Result<()> {
     let handler_name = "Backend/add";
     if !TI_VALID.is_match(&frm.title) || !SU_VALID.is_match(&frm.summary) || frm.markdown.is_empty()
     {
@@ -105,7 +105,7 @@ pub async fn add(
     topic::create(&client, &frm, user)
         .await
         .map_err(log_error(handler_name))?;
-    Ok(Json(json!({})))
+    Ok(())
 }
 
 pub async fn edit(
@@ -113,7 +113,7 @@ pub async fn edit(
     Path((user, id)): Path<(String, i64)>,
     headers: HeaderMap,
     Json(frm): Json<Topic>,
-) -> Result<Json<Value>> {
+) -> Result<()> {
     let handler_name = "Backend/edit";
     if !TI_VALID.is_match(&frm.title) || !SU_VALID.is_match(&frm.summary) || frm.markdown.is_empty()
     {
@@ -134,14 +134,14 @@ pub async fn edit(
             "Resource non-existent!",
         )));
     }
-    Ok(Json(json!({})))
+    Ok(())
 }
 
 pub async fn del(
     Extension(state): Extension<Arc<AppState>>,
     Path((user, id)): Path<(String, i64)>,
     headers: HeaderMap,
-) -> Result<Json<Value>> {
+) -> Result<()> {
     let handler_name = "Backend/del";
     let mut conn = get_conn(&state).await.map_err(log_error(handler_name))?;
     let (_, session) = protect(&headers, &mut conn, &user)
@@ -156,5 +156,5 @@ pub async fn del(
             "Resource non-existent!",
         )));
     }
-    Ok(Json(json!({})))
+    Ok(())
 }

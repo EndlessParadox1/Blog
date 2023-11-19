@@ -10,40 +10,35 @@ let table = '<div class="mb-2">' +
     '<textarea id="markdown" class="form-control" placeholder="Please write in Markdwon format" rows="15"></textarea></div>' +
     '<div style="text-align: center">';
 
-fetch('/api' + path, {credentials: 'include'})
-    .then(res => res.json())
-    .then(data => {
-        if(data.hasOwnProperty('msg'))
-            alert(data.msg);
-        else {
-            $('#home').attr('href', path.replace('admin', 'user'));
-            header.html('Hi, ' + path.replace('/admin/', ''));
-            $('#logout').click(() => logout());
-            $('#new').click(() => new_());
-            $('#all').click(() => list());
-        }
-    });
+let res = await fetch('/api' + path, {credentials: 'include'});
+if(!res.ok) {
+    let err = await res.json();
+    alert(err.msg);
+} else {
+    $('#home').attr('href', path.replace('admin', 'user'));
+    header.html('Hi, ' + path.replace('/admin/', ''));
+    $('#logout').click(() => logout());
+    $('#new').click(() => new_());
+    $('#all').click(() => list());
+}
 
-function logout() {
+async function logout() {
     let ans = confirm('Sure to sign out?');
-    if(ans) {
-        fetch(`/api${path}/logout`, {credentials: 'include'})
-            .then(res => res.json())
-            .then(data => {
-                if(data.hasOwnProperty('msg'))
-                    alert('Logout failed: ' + data.msg);
-                else
-                    location.href = '/login.html';
-            });
+    if (ans) {
+        let res = await fetch(`/api${path}/logout`, {credentials: 'include'});
+        if(!res.ok) {
+            let err = await res.json();
+            alert('Logout failed: ' + err.msg);
+        }
     }
 }
 
 function new_() {
     header.html('New Blog');
     content.html(table + '<button id="postBtn" class="btn btn-primary">Post</button></div>');
-    $('#postBtn').click(() => {
-        let res = confirm('Sure to post?');
-        if(res) {
+    $('#postBtn').click(async () => {
+        let ans = confirm('Sure to post?');
+        if (ans) {
             let title = $('#title').val();
             let summary = $('#summary').val();
             let markdown = $('#markdown').val();
@@ -51,7 +46,7 @@ function new_() {
                 alert('Some field is wrong!');
                 return;
             }
-            fetch(`/api${path}/topic`, {
+            let res = await fetch(`/api${path}/topic`, {
                 method: 'POST',
                 headers: {'Content-Type': 'application/json'},
                 credentials: 'include',
@@ -60,113 +55,106 @@ function new_() {
                     'summary': summary,
                     'markdown': markdown
                 })
-            })
-                .then(res => res.json())
-                .then(data => {
-                    if (data.hasOwnProperty('msg'))
-                        alert('Post failed: ' + data.msg);
-                    else
-                        list();
-                });
+            });
+                if(!res.ok) {
+                    let err = res.json();
+                    alert('Post failed: ' + err.msg);
+                }
+                else
+                    await list();
         }
-        });
+    });
 }
 
-function list() {
+async function list() {
     header.html('All Blogs');
     content.html('');
-    fetch(`/api${path}/topic`, {credentials: 'include'})
-        .then(res => res.json())
-        .then(data => {
-            if (data.hasOwnProperty('msg'))
-                alert('List failed: ' + data.msg);
-            else {
-                if(data.hasOwnProperty('ids')) {
-                    let tmp = '<table class="table table-striped table-hover">' +
-                        '<thead style="text-align: center"><tr><th>No.</th><th>Title</th><th>Opration</th><th>Detail</th></tr></thead>' +
-                        '<tbody id="body"></tbody></table>';
-                    content.html(tmp);
-                    let i = 1;
-                    let ids = data.ids;
-                    let titles = data.titles;
-                    let body = $('#body');
-                    for (let k = 0; k < ids.length; k++) {
-                        tmp = `<tr class="trow"><td>#${i}</td><td>${titles[k]}</td>` +
-                            `<td><div class="btn btn-info btn-sm" onclick="edit(${ids[k]})">Modify</div>` +
-                            `<div class="btn btn-danger btn-sm" onClick="del(${ids[k]})">Delete</div></td>` +
-                            `<td><div id="B${ids[k]}" class="btn btn-light btn-sm" onclick="detail(${ids[k]})">▲</div></td></tr>` +
-                            `<tr><td colspan="4" id="D${ids[k]}" class="detail" data-flag="0"></td></tr>`;
-                        body.append(tmp);
-                        i++;
-                    }
-                } else
-                    content.html('There is nothing yet.');
+    let res = await fetch(`/api${path}/topic`, {credentials: 'include'});
+    let data = await res.json();
+    if(!res.ok)
+        alert('List failed: ' + data.msg);
+    else {
+        if (!$.isEmptyObject(data)) {
+            let tmp = '<table class="table table-striped table-hover">' +
+                '<thead style="text-align: center"><tr><th>No.</th><th>Title</th><th>Opration</th><th>Detail</th></tr></thead>' +
+                '<tbody id="body"></tbody></table>';
+            content.html(tmp);
+            let i = 1;
+            let ids = data.ids;
+            let titles = data.titles;
+            let body = $('#body');
+            for (let k = 0; k < ids.length; k++) {
+                tmp = `<tr class="trow"><td>#${i}</td><td>${titles[k]}</td>` +
+                    `<td><div class="btn btn-info btn-sm" onclick="edit(${ids[k]})">Modify</div>` +
+                    `<div class="btn btn-danger btn-sm" onClick="del(${ids[k]})">Delete</div></td>` +
+                    `<td><div id="B${ids[k]}" class="btn btn-light btn-sm" onclick="detail(${ids[k]})">▲</div></td></tr>` +
+                    `<tr><td colspan="4" id="D${ids[k]}" class="detail" data-flag="0"></td></tr>`;
+                body.append(tmp);
+                i++;
             }
-        })
+        } else
+            content.html('There is nothing yet.');
+    }
 }
 
-function edit(i) {
+async function edit(i) {
     header.html('Modify Blog');
-    fetch(`/api/topic/${i}?level=1`)
-        .then(res => res.json())
-        .then(data => {
-            if(data.hasOwnProperty('msg'))
-                alert('Load failed: ' + data.msg);
-            else {
-                content.html(table + '<button id="submitBtn" class="btn btn-primary">Submit</button></div>');
-                let title = $('#title');
-                let summary = $('#summary');
-                let markdown = $('#markdown');
-                title.val(data.title);
-                summary.val(data.summary);
-                markdown.val(data.markdown);
-                $('#submitBtn').click(() => {
-                    let res = confirm('Sure to submit?');
-                    if(res) {
-                        let title = $('#title').val();
-                        let summary = $('#summary').val();
-                        let markdown = $('#markdown').val();
-                        if (!/^[\x20-\x7E]{1,60}$/.test(title) || !/^[\x20-\x7E]{1,300}$/.test(summary) || markdown === '') {
-                            alert('Some field is wrong!');
-                            return;
-                        }
-                        fetch(`/api${path}/topic/${i}`, {
-                            method: 'PUT',
-                            headers: {'Content-Type': 'application/json'},
-                            credentials: 'include',
-                            body: JSON.stringify({
-                                'title': title,
-                                'summary': summary,
-                                'markdown': markdown
-                            })
-                        })
-                            .then(res => res.json())
-                            .then(data => {
-                                if (data.hasOwnProperty('msg'))
-                                    alert('Update failed: ' + data.msg);
-                                else
-                                    list();
-                            });
-                    }
+    let res = await fetch(`/api/topic/${i}?level=1`);
+    let data = await res.json();
+    if(!res.ok)
+        alert('Load failed: ' + data.msg);
+    else {
+        content.html(table + '<button id="submitBtn" class="btn btn-primary">Submit</button></div>');
+        let title = $('#title');
+        let summary = $('#summary');
+        let markdown = $('#markdown');
+        title.val(data.title);
+        summary.val(data.summary);
+        markdown.val(data.markdown);
+        $('#submitBtn').click(async () => {
+            let ans = confirm('Sure to submit?');
+            if(ans) {
+                let title = $('#title').val();
+                let summary = $('#summary').val();
+                let markdown = $('#markdown').val();
+                if (!/^[\x20-\x7E]{1,60}$/.test(title) || !/^[\x20-\x7E]{1,300}$/.test(summary) || markdown === '') {
+                    alert('Some field is wrong!');
+                    return;
+                }
+                let res_ = await fetch(`/api${path}/topic/${i}`, {
+                    method: 'PUT',
+                    headers: {'Content-Type': 'application/json'},
+                    credentials: 'include',
+                    body: JSON.stringify({
+                        'title': title,
+                        'summary': summary,
+                        'markdown': markdown
+                    })
                 });
+                if(!res_.ok) {
+                    let err = await res_.json();
+                    alert('Update failed: ' + err.msg);
+                }
+                else
+                     await list();
             }
-        })
-
+        });
+    }
 }
 
-function del(i) {
+async function del(i) {
     let ans = confirm('Sure to delete?');
     if(ans) {
-        fetch(`/api${path}/topic/${i}`, {
+        let res = await fetch(`/api${path}/topic/${i}`, {
             method: 'DELETE',
             credentials: 'include'
         })
             .then(res => res.json())
-            .then(data => {
-                if(data.hasOwnProperty('msg'))
+            .then(async data => {
+                if (data.hasOwnProperty('msg'))
                     alert('Delete failed: ' + data.msg);
                 else
-                    list();
+                    await list();
             });
     }
 }
