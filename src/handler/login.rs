@@ -16,7 +16,7 @@ use uuid::Uuid;
 pub async fn login(
     Extension(state): Extension<Arc<AppState>>,
     Json(frm): Json<User>,
-) -> Result<Json<Value>> {
+) -> Result<RedirectView> {
     let handler_name = "Login";
     let client = get_client(&state).await.map_err(log_error(handler_name))?;
     let mut user = user::find(&client, &frm.username)

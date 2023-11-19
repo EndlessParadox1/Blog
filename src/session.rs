@@ -24,6 +24,9 @@ pub fn get_session_id(headers: &HeaderMap) -> Option<String> {
     session_id
 }
 
-pub fn set_session_id(value: &str) -> String {
-    format!("{}={}", COOKIE_NAME, value)
+pub fn set_session_id(value: &str) -> HeaderMap {
+    let c = format!("{}={}", COOKIE_NAME, value);
+    let mut hm = HeaderMap::new();
+    hm.insert(header::SET_COOKIE, c.as_str().parse().unwrap());
+    hm
 }

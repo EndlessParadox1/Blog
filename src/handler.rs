@@ -30,3 +30,12 @@ fn log_error(handler_name: &str) -> Box<dyn Fn(AppError) -> AppError> {
         err
     })
 }
+
+fn redirect_with_session(url: &str, c:Option<&str>) -> Result<RedirectView> {
+    let mut hm = match c {
+        Some(s) => cookie::set_cookie(s),
+        None => HeaderMap::new(),
+    };
+    hm.insert(header::LOCATION, url.parse().unwrap());
+    Ok((StatusCode::FOUND, hm, ()))
+}
