@@ -71,7 +71,7 @@ function list(dt) {
 function detail(i) {
     let div = $('#D' + i);
     let btn = $('#B' + i);
-    div.slideToggle('fast');
+    div.slideToggle();
     if(btn.html() === 'Unfold')
         btn.html('Fold')
     else

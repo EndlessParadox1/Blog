@@ -174,7 +174,7 @@ function del(i) {
 function detail(i) {
     let div = $('#D' + i);
     let btn = $('#B' + i);
-    div.slideToggle('fast');
+    div.slideToggle();
     if(btn.html() === '▲')
         btn.html('▼')
     else
