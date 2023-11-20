@@ -70,7 +70,7 @@ async function list(dt) {
 async function detail(i) {
     let div = $('#C' + i);
     let btn = $('#B' + i);
-    div.slideToggle();
+    div.slideToggle('fast');
     if(btn.html() === 'Unfold')
         btn.html('Fold')
     else

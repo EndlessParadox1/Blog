@@ -166,7 +166,7 @@ async function del(i) {
 async function detail(i) {
     let div = $('#C' + i);
     let btn = $('#B' + i);
-    div.slideToggle();
+    div.slideToggle('fast');
     if(btn.html() === '▲')
         btn.html('▼')
     else
