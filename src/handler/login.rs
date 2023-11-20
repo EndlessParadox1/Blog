@@ -6,6 +6,7 @@ use crate::{
     password,
     rds::set_session,
     AppState, Result,
+    session::set_session_id,
 };
 use axum::{extract::Extension, Json};
 use std::sync::Arc;
@@ -39,5 +40,6 @@ pub async fn login(
     set_session(&mut conn, &session_id, &user_info.username)
         .await
         .map_err(log_error(handler_name))?;
+    let cookie = set_session_id(&session_id);
     Ok(Json(json!({"cookie": cookie})))
 }

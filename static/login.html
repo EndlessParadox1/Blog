@@ -56,12 +56,15 @@
                 'password': password,
             })
         });
+        let data = await res.json();
         if (!res.ok) {
-            let err = await res.json();
-            message.css('color', 'red').text('Login failed:\xa0' + err.msg);
+            message.css('color', 'red').text('Login failed:\xa0' + data.msg);
             setTimeout(() => message.text(''), 3000);
         } else {
-
+            let exp = new Date();
+            exp.setTime(exp.getTime() + 86400000); // one day
+            document.cookie = data.cookie + `;expires=${exp.toUTCString()}`;
+            location.href = '/admin/' + username;
         }
     });
 </script>
