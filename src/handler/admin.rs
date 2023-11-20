@@ -2,7 +2,7 @@ use crate::{
     db::topic,
     error::AppError,
     form::Topic,
-    handler::{auth::protect, get_client, get_conn, log_error, redirect, RedirectView},
+    handler::{auth::protect, get_client, get_conn, log_error},
     rds::del_session,
     AppState, Result,
 };
@@ -46,7 +46,7 @@ pub async fn logout(
     Extension(state): Extension<Arc<AppState>>,
     Path(user): Path<String>,
     headers: HeaderMap,
-) -> Result<RedirectView> {
+) -> Result<()> {
     let handler_name = "Backend/logout";
     let mut conn = get_conn(&state).await.map_err(log_error(handler_name))?;
     let (session_id, _) = protect(&headers, &mut conn, &user)
@@ -55,7 +55,7 @@ pub async fn logout(
     del_session(&mut conn, &session_id)
         .await
         .map_err(log_error(handler_name))?;
-    redirect("/login.html")
+    Ok(())
 }
 
 pub async fn list(
