@@ -32,7 +32,7 @@ async function logout() {
             let err = await res.json();
             alert('Logout failed: ' + err.msg);
         } else
-            location.href = '/';
+            location.href = '/login.html';
     }
 }
 
