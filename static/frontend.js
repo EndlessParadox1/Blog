@@ -27,13 +27,13 @@ async function index() {
                     `<p class="blog-post-meta">Post on ${times[i]}</p>` +
                     `${summaries[i]}<hr><div id="D${ids[i]}" class="detail" data-flag="0"></div>` +
                     `<div id="B${ids[i]}" class="btn btn-sm btn-light">Unfold</div></article>`;
-                $('#B' + ids[i]).click(async () => await detail(ids[i]));
                 content.append(tmp);
+                $('#B' + ids[i]).click(async () => await detail(ids[i]));
             }
             for (let arch of data.archs) {
-                let tmp = `<li><a id="'${arch}'" class="link">${arch}</a></li>`;
-                $(`#${arch}`).click(async () => await list(`'${arch}'`));
+                let tmp = `<li><a id="${arch}" class="link">${arch}</a></li>`;
                 archive.append(tmp);
+                $(`#${arch}`).click(async () => await list(`'${arch}'`));
             }
         } else
             content.html('There is nothing yet.');
@@ -59,8 +59,8 @@ async function list(dt) {
                     `<p class="blog-post-meta">Post on ${times[i]}</p>` +
                     `${summaries[i]}<hr><div id="D${ids[i]}" class="detail" data-flag="0"></div>` +
                     `<div id="B${ids[i]}" class="btn btn-sm btn-light">Unfold</div></article>`;
-                $('#B' + ids[i]).click(async () => await detail(ids[i]));
                 content.append(tmp);
+                $('#B' + ids[i]).click(async () => await detail(ids[i]));
             }
         } else
             content.html('Lost in time travel.');

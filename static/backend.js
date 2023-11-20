@@ -31,7 +31,8 @@ async function logout() {
         if(!res.ok) {
             let err = await res.json();
             alert('Logout failed: ' + err.msg);
-        }
+        } else
+            location.href = '/';
     }
 }
 
@@ -91,10 +92,10 @@ async function list() {
                     `<div class="btn btn-danger btn-sm" id="D${ids[k]}">Delete</div></td>` +
                     `<td><div id="B${ids[k]}" class="btn btn-light btn-sm">▲</div></td></tr>` +
                     `<tr><td colspan="4" id="C${ids[k]}" class="detail" data-flag="0"></td></tr>`;
+                body.append(tmp);
                 $('#E' + ids[k]).click(async () => await edit(ids[k]));
                 $('#D' + ids[k]).click(async () => await del(ids[k]));
                 $('#B' + ids[k]).click(async () => await detail(ids[k]));
-                body.append(tmp);
                 i++;
             }
         } else
