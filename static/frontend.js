@@ -25,7 +25,7 @@ async function index() {
                 let tmp = `<article class="blog-post">` +
                     `<h2 class="blog-post-title">${titles[i]}</h2>` +
                     `<p class="blog-post-meta">Post on ${times[i]}</p>` +
-                    `${summaries[i]}<hr><div id="D${ids[i]}" class="detail" data-flag="0"></div>` +
+                    `${summaries[i]}<hr><div id="C${ids[i]}" class="detail" data-flag="0"></div>` +
                     `<div id="B${ids[i]}" class="btn btn-sm btn-light">Unfold</div></article>`;
                 content.append(tmp);
                 $('#B' + ids[i]).click(async () => await detail(ids[i]));
@@ -33,7 +33,7 @@ async function index() {
             for (let arch of data.archs) {
                 let tmp = `<li><a id="${arch}" class="link">${arch}</a></li>`;
                 archive.append(tmp);
-                $(`#${arch}`).click(async () => await list(`'${arch}'`));
+                $(`#${arch}`).click(async () => await list(arch));
             }
         } else
             content.html('There is nothing yet.');
@@ -57,7 +57,7 @@ async function list(dt) {
                 let tmp = `<article class="blog-post">` +
                     `<h2 class="blog-post-title">${titles[i]}</h2>` +
                     `<p class="blog-post-meta">Post on ${times[i]}</p>` +
-                    `${summaries[i]}<hr><div id="D${ids[i]}" class="detail" data-flag="0"></div>` +
+                    `${summaries[i]}<hr><div id="C${ids[i]}" class="detail" data-flag="0"></div>` +
                     `<div id="B${ids[i]}" class="btn btn-sm btn-light">Unfold</div></article>`;
                 content.append(tmp);
                 $('#B' + ids[i]).click(async () => await detail(ids[i]));
