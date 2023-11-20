@@ -5,12 +5,12 @@ use crate::{
     handler::{get_client, get_conn, log_error},
     password,
     rds::set_session,
-    AppState, Result,
     session::set_session_id,
+    AppState, Result,
 };
 use axum::{extract::Extension, Json};
+use serde_json::{json, Value};
 use std::sync::Arc;
-use serde_json::{Value, json};
 use uuid::Uuid;
 
 pub async fn login(
