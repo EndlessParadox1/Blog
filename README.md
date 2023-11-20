@@ -48,7 +48,7 @@ so that learn and practice such as `Linux`, `PostgreSQL`, `Redis`, `Tokio/Axum`,
 5. Obey REST API norm.
 6. Implement single page app.
 7. Complete TLS for security.
-8. Async server mode implemented by Tokio/Axum.
+8. Async client mode & server mode implemented by Tokio/Axum.
 
 
 ## Guide
