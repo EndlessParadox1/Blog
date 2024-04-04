@@ -4,7 +4,7 @@
 
 ## Structure
 
-```bash
+```
 .
 ├── static: Html and JS files.
 ├── nginx: Config of nginx.
