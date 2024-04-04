@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang='en'>
+<head>
+    <meta charset='UTF-8'>
+    <title>Register</title>
+    <link rel='icon' href='favicon.ico'>
+    <script src='https://code.jquery.com/jquery-3.7.1.min.js'></script>
+    <style>
+        body {text-align: center;}
+        .button {
+            margin: 20px;
+            padding: 5px;
+            font-size: 18px;
+            color: white;
+            background-color: skyblue;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+        .button:hover {background-color: deepskyblue;}
+        label, input {font-size: 16px;}
+        input::-webkit-input-placeholder {text-align: center;}
+    </style>
+</head>
+<body>
+<fieldset>
+    <legend>Register</legend><br>
+    <label>Username:
+        <br><input type='text' id='username' placeholder="4-16 letters or _" maxlength="16">
+    </label><br>
+    <label>Password:
+        <br><input type='password' id='password' placeholder="8-20 letters or digits" maxlength="20">
+    </label><br>
+    <button id='registerBtn' class='button'>Sign Up</button>
+</fieldset>
+<p>
+    Already own one?
+    <a href='login.html' style="text-decoration: none">Just sign in!</a>
+</p>
+<hr>
+<p id='message'></p>
+<script>
+    $('#registerBtn').click(async () => {
+        let ans = confirm('Sure to submit?');
+        if (ans) {
+            let username = $('#username').val();
+            let password = $('#password').val();
+            if (!/^[a-zA-Z_]{4,16}$/.test(username) || !/^[a-zA-Z0-9]{8,20}$/.test(password)) {
+                alert('Some field is wrong!');
+                return;
+            }
+            let message = $('#message');
+            let res = await fetch('/api/register', {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({
+                    'username': username,
+                    'password': password,
+                })
+            });
+            if (!res.ok) {
+                let err = await res.json();
+                message.css('color', 'red').text('Register failed:\xa0' + err.msg);
+                setTimeout(() => message.text(''), 3000);
+            } else {
+                message.css('color', 'black').text('Register succeed!\xa0' + 'Redirect to the login UI later...');
+                setTimeout(() => {
+                    location.href = 'login.html';
+                    message.text('');
+                }, 3000);
+            }
+        }
+    })
+</script>
+</body>
+</html>

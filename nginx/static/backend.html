@@ -1,0 +1,55 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>Blog</title>
+    <link href="https://getbootstrap.com/docs/5.1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://getbootstrap.com/docs/5.1/examples/dashboard/dashboard.css" rel="stylesheet">
+    <link rel="icon" href="/favicon.ico">
+    <script defer src='https://code.jquery.com/jquery-3.7.1.min.js'></script>
+    <style>
+        body {font-size: 1rem;}
+        textarea {resize: none;}
+        .trow {text-align: center;}
+        .detail {display: none;}
+    </style>
+</head>
+<body>
+<header class="navbar navbar-dark sticky-top bg-dark flex-md-nowrap p-0 shadow">
+    <a href="" class="navbar-brand col-md-3 col-lg-2 me-0 px-3">Blog</a>
+    <div class="navbar-nav">
+        <div class="nav-item text-nowrap">
+            <div class="nav-link px-3" id="logout" style="cursor: pointer">Sign Out</div>
+        </div>
+    </div>
+</header>
+<div class="container-fluid">
+    <div class="row">
+        <nav class="col-md-3 col-lg-2 d-md-block bg-light sidebar collapse">
+            <div class="position-sticky pt-3">
+                <ul class="nav flex-column">
+                    <li class="nav-item">
+                        <a class="nav-link" aria-current="page" id="home" style="cursor: pointer">
+                            <span data-feather="home">Home</span>
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </nav>
+        <main class="col-md-9 ms-sm-auto col-lg-10 px-md-4">
+            <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+                <h1 class="h2" id="header"></h1>
+                <div class="btn-toolbar mb-2 mb-md-0">
+                    <div class="btn-group me-2">
+                        <div id="new" class="btn btn-sm btn-outline-secondary">New</div>
+                        <div id="all" class="btn btn-sm btn-outline-secondary px-3">All</div>
+                    </div>
+                </div>
+            </div>
+            <div id="content">Welcome to the Admin UI!</div>
+        </main>
+    </div>
+</div>
+<script defer src="/backend.js"></script>
+</body>
+</html>

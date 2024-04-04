@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang='en'>
+<head>
+    <meta charset='UTF-8'>
+    <title>Login</title>
+    <link rel='icon' href='favicon.ico'>
+    <script src='https://code.jquery.com/jquery-3.7.1.min.js'></script>
+    <style>
+        body {text-align: center;}
+        .button {
+            margin: 20px;
+            padding: 5px;
+            font-size: 18px;
+            color: white;
+            background-color: skyblue;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+        .button:hover {background-color: deepskyblue;}
+        label, input {font-size: 16px;}
+    </style>
+</head>
+<body>
+<fieldset>
+    <legend>Login</legend><br>
+    <label>Username:
+        <br><input type='text' id='username' maxlength="16">
+    </label><br>
+    <label>Password:
+        <br><input type='password' id='password' maxlength="20">
+    </label><br>
+    <button id='loginBtn' class='button'>Sign In</button><br>
+</fieldset>
+<p>
+    No account yet?
+    <a href='register.html' style="text-decoration: none">Just get one!</a>
+</p>
+<hr>
+<p id='message'></p>
+<script>
+    $('#loginBtn').click(async () => {
+        let username = $('#username').val();
+        let password = $('#password').val();
+        if (username === '' || password === '') {
+            alert('Some field is empty!');
+            return;
+        }
+        let message = $('#message');
+        let res = await fetch('/api/login', {
+            method: 'POST',
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify({
+                'username': username,
+                'password': password,
+            })
+        });
+        let data = await res.json();
+        if (!res.ok) {
+            message.css('color', 'red').text('Login failed:\xa0' + data.msg);
+            setTimeout(() => message.text(''), 3000);
+        } else {
+            let exp = new Date();
+            exp.setTime(exp.getTime() + 86400000); // one day
+            document.cookie = data.cookie + `;expires=${exp.toUTCString()}`;
+            location.href = '/admin/' + username;
+        }
+    });
+</script>
+</body>
+</html>

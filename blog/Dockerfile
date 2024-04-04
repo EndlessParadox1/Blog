@@ -1,4 +1,4 @@
-FROM rust:lastest
+FROM rust:latest
 
 WORKDIR /root/server
 
