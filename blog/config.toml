@@ -5,9 +5,8 @@ addr = "0.0.0.0:2396"
 host = "db"
 port = 5432
 user = "postgres"
-password = "2396"
 dbname = "blog"
 pool.max_size = 30
 
 [redis]
-dsn = "redis://:2396@redis:6379/0"
+dsn = "redis://redis:6379/0"

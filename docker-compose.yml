@@ -4,8 +4,6 @@ services:
   redis:
     image: redis:latest
     container_name: redis
-    environment:
-      REDIS_PASSWORD: "2396"
     volumes:
       - redis_data:/data # persist /data in which redis within the container stores data to the volume
 
@@ -15,7 +13,6 @@ services:
     environment:
       POSTGRES_DB: blog
       POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: "2396"
     volumes:
       - db_data:/var/lib/postgresql/data
       - ./blog.sql:/docker-entrypoint-initdb.d/blog.sql # init `blog` with blog.sql
