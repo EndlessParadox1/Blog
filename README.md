@@ -49,7 +49,7 @@ Intend to develop a simple web application as full-stack developer so that learn
 ## Guide
 
 1. Git clone the project.
-2. Bash `docker-compose up -d`.
+2. Bash `docker compose up -d`.
 3. Or just use image published, `endlessparadox1/blog` and `endlessparadox1/nginx` in docker-compose.yml.
 
 ## Contributing
