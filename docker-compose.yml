@@ -7,7 +7,7 @@ services:
     environment:
       REDIS_PASSWORD: "2396"
     ports:
-      - "6379:6379"
+      - "127.0.0.1:6379:6379"
     volumes:
       - redis_data:/data # persist /data in which redis within the container stores data to the volume
 
@@ -19,7 +19,7 @@ services:
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: "2396"
     ports:
-      - "5432:5432"
+      - "127.0.0.1:5432:5432"
     volumes:
       - db_data:/var/lib/postgresql/data
       - ./blog.sql:/docker-entrypoint-initdb.d/blog.sql # init `blog` with blog.sql
@@ -29,7 +29,7 @@ services:
     image: endlessparadox1/blog
     container_name: blog
     ports:
-      - "2396:2396"
+      - "127.0.0.1:2396:2396"
     volumes:
       - /root/log.out:/root/server/log.out # log output 
     depends_on:
