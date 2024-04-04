@@ -2,7 +2,7 @@
 addr = "0.0.0.0:2396"
 
 [pg]
-host = "172.17.0.1"
+host = "db"
 port = 5432
 user = "postgres"
 password = "2396"
@@ -10,4 +10,4 @@ dbname = "blog"
 pool.max_size = 30
 
 [redis]
-dsn = "redis://:2396@172.17.0.1:6379/0"
+dsn = "redis://:2396@redis:6379/0"
