@@ -1,0 +1,55 @@
+version: '3.8'
+
+services:
+  redis:
+    image: redis:latest
+    container_name: redis
+    environment:
+      REDIS_PASSWORD: "2396"
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data # persist /data in which redis within the container stores data to the volume
+
+  db:
+    image: postgres:latest
+    container_name: db
+    environment:
+      POSTGRES_DB: blog
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: "2396"
+    ports:
+      - "5432:5432"
+    volumes:
+      - db_data:/var/lib/postgresql/data
+      - ./blog.sql:/docker-entrypoint-initdb.d/blog.sql # init `blog` with blog.sql
+
+  blog:
+    build:
+      context: ./blog
+      tags: endlessparadox1/blog
+    # image: endlessparadox1/blog
+    container_name: blog
+    ports:
+      - "2396:2396"
+    volumes:
+      - /root/log.out:/root/server/log.out # log output 
+    depends_on:
+      - db
+      - redis
+
+  nginx:
+    build:
+      context: ./nginx
+      tags: endlessparadox1/nginx
+    container_name: nginx
+    ports:
+      - "443:443"
+    volumes:
+      - /root/cert:/etc/nginx/cert # access SSL certificate 
+    depends_on:
+      - blog
+
+volumes:
+  redis_data:
+  db_data:
