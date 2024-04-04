@@ -25,10 +25,8 @@ services:
       - ./blog.sql:/docker-entrypoint-initdb.d/blog.sql # init `blog` with blog.sql
 
   blog:
-    build:
-      context: ./blog
-      tags: endlessparadox1/blog
-    # image: endlessparadox1/blog
+    build: ./blog
+    image: endlessparadox1/blog
     container_name: blog
     ports:
       - "2396:2396"
@@ -39,9 +37,8 @@ services:
       - redis
 
   nginx:
-    build:
-      context: ./nginx
-      tags: endlessparadox1/nginx
+    build: ./nginx
+    image: endlessparadox1/nginx
     container_name: nginx
     ports:
       - "443:443"
