@@ -5,4 +5,4 @@ COPY ./static/ /usr/share/nginx/html/
 
 EXPOSE 443
 
-CMD ["nginx", "-g", "daemon off", ">log.out", "2>&1"]
+CMD nginx -g daemon off >log.out 2>&1

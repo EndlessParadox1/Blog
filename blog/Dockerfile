@@ -8,4 +8,4 @@ RUN cargo build --release
 
 EXPOSE 2396
 
-CMD ["./target/release/blog", ">log.out", "2>&1"] 
+CMD ./target/release/blog >log.out 2>&1
