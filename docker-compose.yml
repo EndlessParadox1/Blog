@@ -13,6 +13,7 @@ services:
     environment:
       POSTGRES_DB: blog
       POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: 2396
     volumes:
       - db_data:/var/lib/postgresql/data
       - ./blog.sql:/docker-entrypoint-initdb.d/blog.sql # init `blog` with blog.sql
