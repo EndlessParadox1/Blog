@@ -50,7 +50,7 @@ Intend to develop a simple web application as full-stack developer so that learn
 
 1. Git clone the project.
 2. Bash `docker compose up -d`.
-3. You can use image exited, i.e.`endlessparadox1/blog` and `endlessparadox1/nginx` in docker-compose.yml.
+3. You can also use image exited, i.e.`endlessparadox1/blog` and `endlessparadox1/nginx` in docker-compose.yml.
 
 ## Contributing
 

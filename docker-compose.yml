@@ -4,6 +4,8 @@ services:
     container_name: redis
     volumes:
       - redis_data:/data # persist /data in which redis within the container stores data to the volume
+    networks:
+      - default
 
   db:
     image: postgres:latest
@@ -14,14 +16,19 @@ services:
       POSTGRES_PASSWORD: 2396
     volumes:
       - db_data:/var/lib/postgresql/data
-      - ./blog.sql:/docker-entrypoint-initdb.d/blog.sql # init `blog` with blog.sql
+      - ./docs/blog.sql:/docker-entrypoint-initdb.d/blog.sql # init `blog` with blog.sql
+    networks:
+      - default
 
   blog:
     build: ./blog
     image: endlessparadox1/blog
     container_name: blog
     volumes:
-      - /root/log.out:/root/server/log.out # log output 
+      - /root/log.out:./log.out # log output 
+      - ./docs/config.toml:./config.toml 
+    networks:
+      - default
     depends_on:
       - db
       - redis
@@ -30,13 +37,20 @@ services:
     build: ./nginx
     image: endlessparadox1/nginx
     container_name: nginx
+    volumes:
+      - /root/cert:/etc/nginx/cert # access SSL certificate
+      - ./docs/nginx.conf:/etc/nginx/nginx.conf 
+    networks:
+      - default
     ports:
       - "443:443"
-    volumes:
-      - /root/cert:/etc/nginx/cert # access SSL certificate 
     depends_on:
       - blog
 
 volumes:
   redis_data:
   db_data:
+
+networks:
+  default:
+    name: blog
