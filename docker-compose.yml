@@ -21,7 +21,7 @@ services:
       - default
 
   blog:
-    build: ./blog
+    # build: ./blog
     image: endlessparadox1/blog
     container_name: blog
     volumes:
@@ -34,7 +34,7 @@ services:
       - redis
 
   nginx:
-    build: ./nginx
+    # build: ./nginx
     image: endlessparadox1/nginx
     container_name: nginx
     volumes:
