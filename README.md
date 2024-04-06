@@ -42,7 +42,7 @@ Intend to develop a simple web application as full-stack developer so that learn
 4. Dynamic and static separation & gateway served by Nginx.
 5. Obey REST API norm.
 6. Implement single page app.
-7. Complete TLS for security.
+7. Complete TLS for security and Http2 for performance.
 8. Async client mode & async server mode implemented by Tokio/Axum.
 9. Docker for automation, isolation and portability.
 
@@ -51,16 +51,11 @@ Intend to develop a simple web application as full-stack developer so that learn
 1. Git clone the project.
 2. Bash `docker compose up -d`.
 3. You can also use image exited, i.e.`endlessparadox1/blog` and `endlessparadox1/nginx` in docker-compose.yml.
+4. Remember, you must have a log.out file and a cert dir including SSL certificates before starting services.
 
 ## Contributing
 
 Issues and Pull Requests are accepted. Feel free to contribute to this project.
-
-## Reference
-
-* [漫游Axum](https://axum.rs/subject/roaming-axum)
-* [使用axum构建博客系统](https://axum.rs/subject/blog)
-* [Rust Course](https://course.rs/about-book.html)
 
 ## License
 
