@@ -6,8 +6,9 @@
 
 ```
 .
-├── static: Html and JS files.
-├── nginx: Config of nginx.
+├── nginx
+│   └── assets: Html and JS files.
+├── docs: Config and DB-init files.
 └── blog 
     └── src: Server-side app.
         ├── config: Init config from toml.
