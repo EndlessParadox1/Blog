@@ -45,7 +45,7 @@ Intend to develop a simple web application as full-stack developer so that learn
 6. Implement single page app.
 7. Complete TLS for security and Http2 for performance.
 8. Async client mode & async server mode implemented by Tokio/Axum.
-9. Docker for automation, isolation and portability.
+9. Docker for automation, isolation, monitor and portability.
 
 ## Guide
 
