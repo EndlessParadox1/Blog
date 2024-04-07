@@ -21,14 +21,15 @@ services:
       - default
 
   blog:
-    # build: ./blog
+    build: ./blog
     image: endlessparadox1/blog
     container_name: blog
     volumes:
-      - /root/log.out:/root/server/log.out # log output 
       - ./docs/config.toml:/root/server/config.toml 
     networks:
       - default
+    logging:
+      driver: "json-file"
     depends_on:
       - db
       - redis
