@@ -21,7 +21,7 @@ services:
       - default
 
   blog:
-    build: ./blog
+    # build: ./blog
     image: endlessparadox1/blog
     container_name: blog
     volumes:
